@@ -52,6 +52,8 @@ public class Building : MonoBehaviour
         }
 
         placed = true;
+
+        GridBuildingSystem.current.inventoryUISlotImage.enabled = false;
     }
 
     #endregion

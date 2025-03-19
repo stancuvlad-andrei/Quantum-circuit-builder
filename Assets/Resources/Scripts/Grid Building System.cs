@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public enum TileType
 {
@@ -22,6 +23,8 @@ public class GridBuildingSystem : MonoBehaviour
     private Building temp; // Temporary building
     private Vector3 prevPos; // Previous position of the building
     private BoundsInt prevArea; // Previous area of the building
+    public Image inventoryUISlotImage; // Inventory UI slot image
+    private SpriteRenderer tempSpriteRenderer; // Temporary sprite renderer
 
 
     #region Unity Methods
@@ -48,13 +51,17 @@ public class GridBuildingSystem : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (EventSystem.current.IsPointerOverGameObject(0))
-            {
-                return;
-            }
+            if (EventSystem.current.IsPointerOverGameObject(0)) return;
 
             if (!temp.placed)
             {
+                // New: Activate building sprite on first click
+                if (tempSpriteRenderer != null && !tempSpriteRenderer.enabled)
+                {
+                    tempSpriteRenderer.enabled = true;
+                }
+
+                // Existing movement code...
                 Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector3Int cellPos = gridLayout.LocalToCell(touchPos);
 
@@ -77,6 +84,7 @@ public class GridBuildingSystem : MonoBehaviour
         {
             clearArea();
             Destroy(temp.gameObject);
+            inventoryUISlotImage.enabled = false;
         }
     }
 
@@ -91,7 +99,24 @@ public class GridBuildingSystem : MonoBehaviour
     public void initializeWithBuilding(GameObject building)
     {
         temp = Instantiate(building, Vector3.zero, Quaternion.identity).GetComponent<Building>();
-        FollowBuilding();
+
+        // New: Get and disable the sprite renderer
+        if (temp.spriteTransform != null)
+        {
+            tempSpriteRenderer = temp.spriteTransform.GetComponent<SpriteRenderer>();
+            if (tempSpriteRenderer != null)
+            {
+                tempSpriteRenderer.enabled = false;
+            }
+        }
+
+        // New: Show in inventory
+        if (inventoryUISlotImage != null && tempSpriteRenderer != null)
+        {
+            inventoryUISlotImage.sprite = tempSpriteRenderer.sprite;
+            inventoryUISlotImage.enabled = true;
+        }
+
     }
 
     private void clearArea()
