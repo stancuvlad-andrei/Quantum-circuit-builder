@@ -122,6 +122,52 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &54389694
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 54389696}
+  - component: {fileID: 54389695}
+  m_Layer: 0
+  m_Name: Building Sorter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &54389695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54389694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc20b8d6114260843ae6db2373d827a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseSortingOrder: 0
+  _sortingOrderOffset: 10
+--- !u!4 &54389696
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54389694}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 24.281357, y: -10.190082, z: 1.203894}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &73327499
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +225,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: 'X Gate
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -313,7 +361,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: CZ Gate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -447,7 +495,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: T Gate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2519,7 +2567,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Y Gate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3156,6 +3204,7 @@ MonoBehaviour:
   mainTilemap: {fileID: 195900610}
   tempTilemap: {fileID: 615748459}
   inventoryUISlotImage: {fileID: 645675451}
+  buildingSorter: {fileID: 54389695}
 --- !u!4 &648429326
 Transform:
   m_ObjectHideFlags: 0
@@ -3337,7 +3386,7 @@ GameObject:
   - component: {fileID: 934142649}
   - component: {fileID: 934142648}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: H Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3768,7 +3817,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: 'H Gate
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3858,7 +3909,7 @@ GameObject:
   - component: {fileID: 1342952449}
   - component: {fileID: 1342952448}
   m_Layer: 5
-  m_Name: Button (6)
+  m_Name: CX Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3979,7 +4030,7 @@ GameObject:
   - component: {fileID: 1391218560}
   - component: {fileID: 1391218559}
   m_Layer: 5
-  m_Name: Button (8)
+  m_Name: SP Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4221,7 +4272,7 @@ GameObject:
   - component: {fileID: 1436077255}
   - component: {fileID: 1436077254}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Y Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4386,7 +4437,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Z Gate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4654,7 +4705,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: 'SP Gate
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4788,7 +4841,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: CX Gate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4946,7 +4999,7 @@ GameObject:
   - component: {fileID: 1664327512}
   - component: {fileID: 1664327511}
   m_Layer: 5
-  m_Name: Button (7)
+  m_Name: CZ Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5200,7 +5253,7 @@ GameObject:
   - component: {fileID: 1814252332}
   - component: {fileID: 1814252331}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: Z Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5365,7 +5418,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: S Gate
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5455,7 +5508,7 @@ GameObject:
   - component: {fileID: 1926400557}
   - component: {fileID: 1926400556}
   m_Layer: 5
-  m_Name: Button
+  m_Name: X Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5710,7 +5763,7 @@ GameObject:
   - component: {fileID: 1994490468}
   - component: {fileID: 1994490467}
   m_Layer: 5
-  m_Name: Button (5)
+  m_Name: T Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6153,7 +6206,7 @@ GameObject:
   - component: {fileID: 2133395331}
   - component: {fileID: 2133395330}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: S Gate Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6309,6 +6362,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4929701468268792624, guid: d3184fbe391accd4caa9f161d997e3ce, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4931586399358573743, guid: d3184fbe391accd4caa9f161d997e3ce, type: 3}
       propertyPath: m_Name
       value: Qubit
@@ -6326,6 +6383,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11365617776075148, guid: d3525ed74d895f845b2bbaa2ca85a096, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4493828650497816416, guid: d3525ed74d895f845b2bbaa2ca85a096, type: 3}
       propertyPath: m_Name
       value: Measurement
@@ -6391,13 +6452,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Path Sprite
       objectReference: {fileID: 0}
+    - target: {fileID: 1467100549403146248, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1857687829908631763, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
+      propertyPath: m_SpriteSortPoint
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3929930286836735728, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
       propertyPath: m_LocalPosition.x
       value: 24.81
       objectReference: {fileID: 0}
     - target: {fileID: 3929930286836735728, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.09
+      value: -11.97
       objectReference: {fileID: 0}
     - target: {fileID: 3929930286836735728, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6455,3 +6524,4 @@ SceneRoots:
   - {fileID: 5534314189236671659}
   - {fileID: 960036108186234706}
   - {fileID: 1560695371517363749}
+  - {fileID: 54389696}

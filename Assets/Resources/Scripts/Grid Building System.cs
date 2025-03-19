@@ -25,6 +25,7 @@ public class GridBuildingSystem : MonoBehaviour
     private BoundsInt prevArea; // Previous area of the building
     public Image inventoryUISlotImage; // Inventory UI slot image
     private SpriteRenderer tempSpriteRenderer; // Temporary sprite renderer
+    [SerializeField] private BuildingSorter buildingSorter; // Building sorter
 
 
     #region Unity Methods
@@ -70,6 +71,12 @@ public class GridBuildingSystem : MonoBehaviour
                     temp.transform.localPosition = gridLayout.CellToLocalInterpolated(cellPos + new Vector3(.5f, .5f, .0f));
                     prevPos = cellPos;
                     FollowBuilding();
+
+                    // Update sorting order while moving
+                    if (temp != null)
+                    {
+                        temp.UpdateSortingOrder(BuildingSorter.Instance.BaseSortingOrder + 999);
+                    }
                 }
             }
         }
@@ -138,7 +145,7 @@ public class GridBuildingSystem : MonoBehaviour
         int size = baseArray.Length;
         TileBase[] tileArea = new TileBase[size];
 
-        for(int i = 0; i < baseArray.Length; i++)
+        for (int i = 0; i < baseArray.Length; i++)
         {
             if (baseArray[i] == tileBases[TileType.white])
             {
@@ -173,6 +180,11 @@ public class GridBuildingSystem : MonoBehaviour
     {
         SetTilesBlock(area, TileType.empty, tempTilemap);
         SetTilesBlock(area, TileType.green, mainTilemap);
+
+        if (buildingSorter != null)
+        {
+            buildingSorter.RegisterBuilding(temp);
+        }
     }
 
     #endregion

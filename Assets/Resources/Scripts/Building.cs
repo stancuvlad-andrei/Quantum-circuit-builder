@@ -7,18 +7,16 @@ public class Building : MonoBehaviour
     public bool placed { get; private set; }
     public BoundsInt area;
     public Transform spriteTransform;
+    private SpriteRenderer spriteRenderer;
 
     #region Unity Methods
 
     void Start()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        if (spriteTransform != null)
+        {
+            spriteRenderer = spriteTransform.GetComponent<SpriteRenderer>();
+        }
     }
 
     #endregion
@@ -31,12 +29,7 @@ public class Building : MonoBehaviour
         BoundsInt areaTemp = area;
         areaTemp.position = cellPos;
 
-        if (GridBuildingSystem.current.CanPlaceBuilding(areaTemp))
-        {
-            return true;
-        }
-
-        return false;
+        return GridBuildingSystem.current.CanPlaceBuilding(areaTemp);
     }
 
     public void Place()
@@ -52,8 +45,29 @@ public class Building : MonoBehaviour
         }
 
         placed = true;
-
         GridBuildingSystem.current.inventoryUISlotImage.enabled = false;
+
+        // Register with sorter
+        if (BuildingSorter.Instance != null)
+        {
+            BuildingSorter.Instance.RegisterBuilding(this);
+        }
+    }
+
+    public void UpdateSortingOrder(int newOrder)
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sortingOrder = newOrder;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (BuildingSorter.Instance != null)
+        {
+            BuildingSorter.Instance.UnregisterBuilding(this);
+        }
     }
 
     #endregion
