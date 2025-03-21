@@ -13,6 +13,8 @@ public class BuildingSorter : MonoBehaviour
 
     private List<Building> buildings = new List<Building>();
 
+    #region Unity Methods
+
     private void Awake()
     {
         if (Instance == null)
@@ -24,6 +26,10 @@ public class BuildingSorter : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    #endregion
+
+    #region Building Methods
 
     public void RegisterBuilding(Building building)
     {
@@ -56,4 +62,7 @@ public class BuildingSorter : MonoBehaviour
             buildings[i].UpdateSortingOrder(_baseSortingOrder + i * _sortingOrderOffset);
         }
     }
+
+    #endregion
+
 }
