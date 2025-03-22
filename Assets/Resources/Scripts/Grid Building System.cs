@@ -26,9 +26,9 @@ public class GridBuildingSystem : MonoBehaviour
     public Image inventoryUISlotImage; // Inventory UI slot image
     private SpriteRenderer tempSpriteRenderer; // Temporary sprite renderer
     [SerializeField] private BuildingSorter buildingSorter; // Building sorter
-    [Header("Delete System")]
-    public Button deleteButton;
-    private Building selectedBuildingForDeletion;
+    [Header("Delete System")] // Delete system
+    public Button deleteButton; // Delete button
+    private Building selectedBuildingForDeletion; // Selected building for deletion
 
 
     #region Unity Methods
@@ -108,10 +108,6 @@ public class GridBuildingSystem : MonoBehaviour
             inventoryUISlotImage.enabled = false;
         }
     }
-
-    #endregion
-
-    #region Tilemap Management
 
     #endregion
 
@@ -211,6 +207,12 @@ public class GridBuildingSystem : MonoBehaviour
 
         selectedBuildingForDeletion = building;
 
+        if (inventoryUISlotImage != null && building.spriteRenderer != null)
+        {
+            inventoryUISlotImage.sprite = building.spriteRenderer.sprite;
+            inventoryUISlotImage.enabled = true;
+        }
+
         // Uppdate delete button position version
         /*if (deleteButton != null)
         {
@@ -241,6 +243,11 @@ public class GridBuildingSystem : MonoBehaviour
         SetTilesBlock(selectedBuildingForDeletion.area, TileType.white, mainTilemap);
         Destroy(selectedBuildingForDeletion.gameObject);
         deleteButton.gameObject.SetActive(false);
+
+        // Clear inventory UI
+        inventoryUISlotImage.enabled = false;
+        inventoryUISlotImage.sprite = null;
+
         selectedBuildingForDeletion = null;
     }
 

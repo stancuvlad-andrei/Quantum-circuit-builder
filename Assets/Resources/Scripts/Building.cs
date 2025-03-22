@@ -7,7 +7,7 @@ public class Building : MonoBehaviour
     public bool placed { get; private set; }
     public BoundsInt area;
     public Transform spriteTransform;
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
 
     #region Unity Methods
 
