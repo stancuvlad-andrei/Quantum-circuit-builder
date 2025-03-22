@@ -26,12 +26,26 @@ public class GridBuildingSystem : MonoBehaviour
     public Image inventoryUISlotImage; // Inventory UI slot image
     private SpriteRenderer tempSpriteRenderer; // Temporary sprite renderer
     [SerializeField] private BuildingSorter buildingSorter; // Building sorter
+    [Header("Delete System")]
+    public Button deleteButton;
+    private Building selectedBuildingForDeletion;
 
 
     #region Unity Methods
     private void Awake()
     {
-        current = this;
+        if (current != null && current != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            current = this;
+        }
+
+        // Initialize other components here
+        if (mainTilemap == null)
+            Debug.LogError("Main Tilemap not assigned!");
     }
 
     private void Start()
@@ -185,6 +199,49 @@ public class GridBuildingSystem : MonoBehaviour
         {
             buildingSorter.RegisterBuilding(temp);
         }
+    }
+
+    public void SelectBuildingForDeletion(Building building)
+    {
+        if (building == null)
+        {
+            Debug.LogError("Tried to select null building!");
+            return;
+        }
+
+        selectedBuildingForDeletion = building;
+
+        // Uppdate delete button position version
+        /*if (deleteButton != null)
+        {
+            deleteButton.gameObject.SetActive(true);
+            // Position button using canvas coordinates
+            Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(
+                Camera.main,
+                building.transform.position
+            );
+            deleteButton.GetComponent<RectTransform>().position = screenPos + new Vector2(0, 50);
+        }*/
+
+        if (deleteButton != null)
+        {
+            deleteButton.gameObject.SetActive(true);
+        }
+
+        else
+        {
+            Debug.LogError("Delete button reference not set in GridBuildingSystem!");
+        }
+    }
+
+    public void DeleteSelectedBuilding()
+    {
+        if (selectedBuildingForDeletion == null) return;
+
+        SetTilesBlock(selectedBuildingForDeletion.area, TileType.white, mainTilemap);
+        Destroy(selectedBuildingForDeletion.gameObject);
+        deleteButton.gameObject.SetActive(false);
+        selectedBuildingForDeletion = null;
     }
 
     #endregion
