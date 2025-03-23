@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-    public bool placed { get; private set; }
+    public bool placed { get; set; }
     public BoundsInt area;
     public Transform spriteTransform;
     public SpriteRenderer spriteRenderer;

@@ -29,6 +29,8 @@ public class GridBuildingSystem : MonoBehaviour
     [Header("Delete System")] // Delete system
     public Button deleteButton; // Delete button
     private Building selectedBuildingForDeletion; // Selected building for deletion
+    public Button relocateButton; // Relocate button
+    private Building selectedBuildingForRelocation; // Selected building for relocation
 
 
     #region Unity Methods
@@ -242,13 +244,72 @@ public class GridBuildingSystem : MonoBehaviour
 
         SetTilesBlock(selectedBuildingForDeletion.area, TileType.white, mainTilemap);
         Destroy(selectedBuildingForDeletion.gameObject);
-        deleteButton.gameObject.SetActive(false);
+
+        // Hide both buttons
+        if (deleteButton != null)
+            deleteButton.gameObject.SetActive(false);
+        if (relocateButton != null)
+            relocateButton.gameObject.SetActive(false);
 
         // Clear inventory UI
         inventoryUISlotImage.enabled = false;
         inventoryUISlotImage.sprite = null;
 
         selectedBuildingForDeletion = null;
+    }
+
+    public void SelectBuildingForRelocation(Building building)
+    {
+        if (building == null)
+        {
+            Debug.LogError("Tried to select null building for relocation!");
+            return;
+        }
+
+        selectedBuildingForRelocation = building;
+
+        if (relocateButton != null)
+        {
+            relocateButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Relocate button reference not set in GridBuildingSystem!");
+        }
+    }
+
+    public void RelocateSelectedBuilding()
+    {
+        if (selectedBuildingForRelocation == null) return;
+
+        // Free up the original area
+        SetTilesBlock(selectedBuildingForRelocation.area, TileType.white, mainTilemap);
+        BuildingSorter.Instance.UnregisterBuilding(selectedBuildingForRelocation);
+
+        // Prepare the building for relocation
+        temp = selectedBuildingForRelocation;
+        temp.placed = false;
+
+        // Reset sprite position with Y offset and enable it
+        if (temp.spriteTransform != null)
+        {
+            // Set Y offset to 0.3f for visibility during relocation
+            temp.spriteTransform.localPosition = new Vector3(0, 0.3f, 0);
+            tempSpriteRenderer = temp.spriteTransform.GetComponent<SpriteRenderer>();
+            tempSpriteRenderer.enabled = true;
+        }
+
+        // Update inventory UI
+        if (inventoryUISlotImage != null && tempSpriteRenderer != null)
+        {
+            inventoryUISlotImage.sprite = tempSpriteRenderer.sprite;
+            inventoryUISlotImage.enabled = true;
+        }
+
+        // Hide buttons
+        relocateButton.gameObject.SetActive(false);
+        deleteButton.gameObject.SetActive(false);
+        selectedBuildingForRelocation = null;
     }
 
     #endregion

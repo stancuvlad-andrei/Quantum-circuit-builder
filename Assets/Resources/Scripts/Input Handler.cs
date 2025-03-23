@@ -61,6 +61,7 @@ public class InputHandler : MonoBehaviour
         if (building != null && building.placed)
         {
             gridSystem.SelectBuildingForDeletion(building);
+            gridSystem.SelectBuildingForRelocation(building);
         }
     }
 
