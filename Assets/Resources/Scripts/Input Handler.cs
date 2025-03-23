@@ -5,8 +5,8 @@ using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
 {
-    private Camera mainCamera;
-    [SerializeField] private GridBuildingSystem gridSystem;
+    private Camera mainCamera; // Main camera reference
+    [SerializeField] private GridBuildingSystem gridSystem; // GridBuildingSystem reference
 
     #region Unity Methods
 

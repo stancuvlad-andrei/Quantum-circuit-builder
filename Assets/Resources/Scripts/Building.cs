@@ -5,9 +5,9 @@ using UnityEngine;
 public class Building : MonoBehaviour
 {
     public bool placed { get; set; }
-    public BoundsInt area;
-    public Transform spriteTransform;
-    public SpriteRenderer spriteRenderer;
+    public BoundsInt area; // Area occupied by building
+    public Transform spriteTransform; // Transform of the sprite
+    public SpriteRenderer spriteRenderer; // Sprite renderer of the sprite
 
     #region Unity Methods
 

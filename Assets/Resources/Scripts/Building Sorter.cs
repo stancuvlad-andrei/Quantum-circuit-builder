@@ -5,13 +5,13 @@ public class BuildingSorter : MonoBehaviour
 {
     public static BuildingSorter Instance { get; private set; }
 
-    [SerializeField] private int _baseSortingOrder = 0;
-    [SerializeField] private int _sortingOrderOffset = 10;
+    [SerializeField] private int _baseSortingOrder = 0; // Base sorting order for buildings
+    [SerializeField] private int _sortingOrderOffset = 10; // Sorting order offset between buildings
 
-    public int BaseSortingOrder => _baseSortingOrder;
-    public int SortingOrderOffset => _sortingOrderOffset;
+    public int BaseSortingOrder => _baseSortingOrder; // Base sorting order for buildings
+    public int SortingOrderOffset => _sortingOrderOffset; // Sorting order offset between buildings
 
-    private List<Building> buildings = new List<Building>();
+    private List<Building> buildings = new List<Building>(); // List of all buildings
 
     #region Unity Methods
 
