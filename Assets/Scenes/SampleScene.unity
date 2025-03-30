@@ -4229,6 +4229,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &660780370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660780368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b050e4e368139844ea3d35d560cf6464, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeSprite: {fileID: 21300000, guid: 50658cb1b6906ca45b1ed84ea315faae, type: 3}
+  inactiveSprite: {fileID: 21300000, guid: 49b62cd9ac0c5b54190f7c2366db7cea, type: 3}
+  state: 0
 --- !u!1 &860491095
 GameObject:
   m_ObjectHideFlags: 0
@@ -5220,6 +5235,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1342952446}
   m_CullTransparentMesh: 1
+--- !u!1 &1361457815
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1361457817}
+  - component: {fileID: 1361457816}
+  m_Layer: 0
+  m_Name: Simulation Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1361457816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361457815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e071a485c330f643859fd9d19cca212, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startButton: {fileID: 1394713985}
+  buttonText: {fileID: 1542745887}
+--- !u!4 &1361457817
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361457815}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1391218557
 GameObject:
   m_ObjectHideFlags: 0
@@ -7610,13 +7671,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Qubit
       objectReference: {fileID: 0}
+    - target: {fileID: 6215588016682374429, guid: d3184fbe391accd4caa9f161d997e3ce, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4931586399358573743, guid: d3184fbe391accd4caa9f161d997e3ce, type: 3}
-      insertIndex: -1
+      insertIndex: 1
       addedObject: {fileID: 660780369}
+    - targetCorrespondingSourceObject: {fileID: 4931586399358573743, guid: d3184fbe391accd4caa9f161d997e3ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 660780370}
   m_SourcePrefab: {fileID: 100100000, guid: d3184fbe391accd4caa9f161d997e3ce, type: 3}
 --- !u!1001 &1560695371517363749
 PrefabInstance:
@@ -7775,3 +7843,4 @@ SceneRoots:
   - {fileID: 1560695371517363749}
   - {fileID: 54389696}
   - {fileID: 860491098}
+  - {fileID: 1361457817}
