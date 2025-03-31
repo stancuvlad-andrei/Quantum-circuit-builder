@@ -4711,6 +4711,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985347688}
   m_CullTransparentMesh: 1
+--- !u!212 &1126101914 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 1857687829908631763, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
+  m_PrefabInstance: {fileID: 5534314189236671659}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1212651351
 GameObject:
   m_ObjectHideFlags: 0
@@ -7494,6 +7499,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2125046481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125046478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95bb81aef997fae4f9edd06e2f1022e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waveSprites:
+  - {fileID: 21300000, guid: 08ecdaa4ddcf6fa43a85c95fd71d2f53, type: 3}
+  - {fileID: 21300000, guid: 64dbf5731d3e0a94eb19a26f2f77301e, type: 3}
+  waveDelay: 0.5
+  spriteRenderer: {fileID: 1126101914}
 --- !u!1 &2133395328
 GameObject:
   m_ObjectHideFlags: 0
@@ -7824,10 +7846,13 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 9168114439672376212, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 2125046480}
+    - targetCorrespondingSourceObject: {fileID: 9168114439672376212, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2125046479}
     - targetCorrespondingSourceObject: {fileID: 9168114439672376212, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2125046480}
+      addedObject: {fileID: 2125046481}
   m_SourcePrefab: {fileID: 100100000, guid: 9889e5a77c2874f409c078bdf5b55d01, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

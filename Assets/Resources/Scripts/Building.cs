@@ -39,6 +39,9 @@ public class Building : MonoBehaviour
         areaTemp.position = cellPos;
         GridBuildingSystem.current.PlaceBuilding(areaTemp);
 
+        // Snap to grid center
+        transform.position = GridBuildingSystem.current.gridLayout.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f, 0));
+
         if (spriteTransform != null)
         {
             spriteTransform.localPosition = new Vector3(0, -0.05f, 0);
@@ -47,10 +50,36 @@ public class Building : MonoBehaviour
         placed = true;
         GridBuildingSystem.current.inventoryUISlotImage.enabled = false;
 
-        // Register with sorter
+        // Update sorting
         if (BuildingSorter.Instance != null)
         {
             BuildingSorter.Instance.RegisterBuilding(this);
+        }
+
+        // If this is a path, update neighbors and notify adjacent paths
+        Path thisPath = GetComponent<Path>();
+        if (thisPath != null)
+        {
+            thisPath.FindNeighbors();
+
+            // Notify adjacent paths to update their neighbors
+            Vector3Int[] directions = {
+            Vector3Int.right, Vector3Int.left,
+            Vector3Int.up, Vector3Int.down
+        };
+
+            foreach (var dir in directions)
+            {
+                Vector3Int neighborPos = cellPos + dir;
+                if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
+                {
+                    Path neighborPath = neighbor.GetComponent<Path>();
+                    if (neighborPath != null)
+                    {
+                        neighborPath.FindNeighbors();
+                    }
+                }
+            }
         }
     }
 

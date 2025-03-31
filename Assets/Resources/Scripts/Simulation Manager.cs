@@ -47,8 +47,16 @@ public class SimulationManager : MonoBehaviour
         Qubit[] qubits = FindObjectsOfType<Qubit>();
         foreach (Qubit qubit in qubits)
         {
-            qubit.Deactivate();
+            qubit.Deactivate(); // This already calls Deactivate() on Qubit
         }
+
+        Path[] paths = FindObjectsOfType<Path>();
+        foreach (Path path in paths)
+        {
+            path.ResetPath();
+            path.spriteRenderer.sprite = path.waveSprites[0]; // Immediate reset
+        }
+
         Debug.Log("Simulation Stopped");
     }
 

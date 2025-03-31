@@ -31,6 +31,7 @@ public class GridBuildingSystem : MonoBehaviour
     private Building selectedBuildingForDeletion; // Selected building for deletion
     public Button relocateButton; // Relocate button
     private Building selectedBuildingForRelocation; // Selected building for relocation
+    public Dictionary<Vector3Int, Building> placedBuildings = new Dictionary<Vector3Int, Building>(); // Placed buildings
 
 
     #region Unity Methods
@@ -193,10 +194,22 @@ public class GridBuildingSystem : MonoBehaviour
         SetTilesBlock(area, TileType.empty, tempTilemap);
         SetTilesBlock(area, TileType.green, mainTilemap);
 
-        if (buildingSorter != null)
+        // Track ALL cells in the area (even for single-tile)
+        foreach (Vector3Int cell in area.allPositionsWithin)
         {
-            buildingSorter.RegisterBuilding(temp);
+            if (!placedBuildings.ContainsKey(cell))
+            {
+                placedBuildings.Add(cell, temp);
+            }
         }
+
+        if (buildingSorter != null) buildingSorter.RegisterBuilding(temp);
+    }
+
+    public Building GetBuildingAt(Vector3Int cell)
+    {
+        placedBuildings.TryGetValue(cell, out Building building);
+        return building;
     }
 
     public void SelectBuildingForDeletion(Building building)

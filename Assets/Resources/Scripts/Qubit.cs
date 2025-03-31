@@ -25,23 +25,39 @@ public class Qubit : MonoBehaviour
     public void Activate()
     {
         state = Random.Range(0, 2);
-        if (spriteRenderer != null)
+        if (spriteRenderer != null && activeSprite != null)
         {
-            if (activeSprite != null)
+            spriteRenderer.sprite = activeSprite;
+        }
+        TriggerAdjacentPaths(); // Trigger paths
+        Debug.Log($"Qubit activated at {transform.position}");
+    }
+
+    private void TriggerAdjacentPaths()
+    {
+        Building building = GetComponent<Building>();
+        if (building == null) return;
+
+        // Use grid-aligned position
+        Vector3Int centerCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
+
+        Vector3Int[] directions = {
+            Vector3Int.right, Vector3Int.left,
+            Vector3Int.up, Vector3Int.down
+        };
+
+        foreach (var dir in directions)
+        {
+            Vector3Int neighborPos = centerCell + dir;
+            if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
             {
-                spriteRenderer.sprite = activeSprite;
-                Debug.Log($"Sprite changed to activeSprite for qubit at {transform.position}");
-            }
-            else
-            {
-                Debug.LogError("activeSprite is not assigned in the inspector!");
+                if (neighbor.TryGetComponent<Path>(out Path path))
+                {
+                    // Start wave with null source (qubit-initiated)
+                    path.StartWave(null);
+                }
             }
         }
-        else
-        {
-            Debug.LogError("SpriteRenderer not found!");
-        }
-        Debug.Log($"Qubit at {transform.position} activated with state {state}");
     }
 
     public void Deactivate()
