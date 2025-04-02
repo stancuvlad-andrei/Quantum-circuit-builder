@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class Qubit : MonoBehaviour
 {
-    public Sprite activeSprite;    // Sprite for activated state
-    public Sprite inactiveSprite;  // Sprite for deactivated state
-
+    public Sprite activeSprite;
+    public Sprite inactiveSprite;
     private SpriteRenderer spriteRenderer;
     public int state;
 
     private void Awake()
     {
-        // This will search this GameObject and its children for a SpriteRenderer
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (spriteRenderer != null && inactiveSprite != null)
         {
@@ -29,8 +27,9 @@ public class Qubit : MonoBehaviour
         {
             spriteRenderer.sprite = activeSprite;
         }
-        TriggerAdjacentPaths(); // Trigger paths
+        TriggerAdjacentPaths();
         Debug.Log($"Qubit activated at {transform.position}");
+        Debug.Log($"Qubit state: {state}");
     }
 
     private void TriggerAdjacentPaths()
@@ -38,9 +37,7 @@ public class Qubit : MonoBehaviour
         Building building = GetComponent<Building>();
         if (building == null) return;
 
-        // Use grid-aligned position
         Vector3Int centerCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
-
         Vector3Int[] directions = {
             Vector3Int.right, Vector3Int.left,
             Vector3Int.up, Vector3Int.down
@@ -53,8 +50,7 @@ public class Qubit : MonoBehaviour
             {
                 if (neighbor.TryGetComponent<Path>(out Path path))
                 {
-                    // Start wave with null source (qubit-initiated)
-                    path.StartWave(null);
+                    path.StartWave(null, state);
                 }
             }
         }
