@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 public class Path : MonoBehaviour
 {
-    public Sprite[] waveSprites;
+    public Sprite[] waveSprites; // Assign in Inspector: [default, active]
     public float waveDelay = 0.3f;
+
     public SpriteRenderer spriteRenderer;
     private Building building;
     private List<Path> neighborPaths = new List<Path>();
@@ -38,7 +39,7 @@ public class Path : MonoBehaviour
             Vector3Int neighborPos = centerCell + dir;
             if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
             {
-                if (neighbor.TryGetComponent<Path>(out Path path) && path != this)
+                if (neighbor.TryGetComponent<Path>(out Path path) && path != this) // Exclude self
                 {
                     neighborPaths.Add(path);
                 }
@@ -46,51 +47,33 @@ public class Path : MonoBehaviour
         }
     }
 
-    public void StartWave(Path source = null, int state = -1)
+    public void StartWave(Path source = null)
     {
         if (!isAnimating)
         {
-            StartCoroutine(WaveAnimation(source, state));
+            StartCoroutine(WaveAnimation(source));
         }
     }
 
-    private IEnumerator WaveAnimation(Path source, int state)
+    private IEnumerator WaveAnimation(Path source)
     {
         isAnimating = true;
         if (waveSprites.Length >= 2)
         {
-            spriteRenderer.sprite = waveSprites[1];
+            spriteRenderer.sprite = waveSprites[1]; // Activate
             yield return new WaitForSeconds(waveDelay);
 
-            // Propagate to neighbors
+            // Propagate to neighbors EXCEPT the source
             foreach (Path neighbor in neighborPaths)
             {
-                if (neighbor != source)
+                if (neighbor != source) // Skip the path that triggered this wave
                 {
-                    neighbor.StartWave(this, state);
-                }
-            }
-
-            // Notify adjacent components
-            Vector3Int centerCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
-            Vector3Int[] directions = { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
-
-            foreach (var dir in directions)
-            {
-                Vector3Int neighborPos = centerCell + dir;
-                if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighborBuilding))
-                {
-                    // Handle Measuring Gates
-                    MeasuringGate mg = neighborBuilding.GetComponent<MeasuringGate>();
-                    if (mg != null && state != -1) // Only send valid states
-                    {
-                        mg.ReceiveMeasurement(state);
-                    }
+                    neighbor.StartWave(this); // Pass "this" as the source
                 }
             }
 
             yield return new WaitForSeconds(0.1f);
-            spriteRenderer.sprite = waveSprites[0];
+            spriteRenderer.sprite = waveSprites[0]; // Reset
         }
         isAnimating = false;
     }
