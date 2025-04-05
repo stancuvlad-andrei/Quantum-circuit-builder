@@ -27,30 +27,27 @@ public class Qubit : MonoBehaviour
         {
             spriteRenderer.sprite = activeSprite;
         }
-        TriggerAdjacentPaths();
+
+        // Get current position
+        Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
+
+        // Trigger adjacent paths with qubit's position
+        TriggerAdjacentPaths(currentCell);
         Debug.Log($"Qubit activated at {transform.position}");
         Debug.Log($"Qubit state: {state}");
     }
 
-    private void TriggerAdjacentPaths()
+    private void TriggerAdjacentPaths(Vector3Int sourcePosition)
     {
-        Building building = GetComponent<Building>();
-        if (building == null) return;
-
-        Vector3Int centerCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
-        Vector3Int[] directions = {
-            Vector3Int.right, Vector3Int.left,
-            Vector3Int.up, Vector3Int.down
-        };
-
+        Vector3Int[] directions = { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
         foreach (var dir in directions)
         {
-            Vector3Int neighborPos = centerCell + dir;
+            Vector3Int neighborPos = sourcePosition + dir;
             if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
             {
                 if (neighbor.TryGetComponent<Path>(out Path path))
                 {
-                    path.StartWave(null, state);
+                    path.StartWave(sourcePosition, state);
                 }
             }
         }

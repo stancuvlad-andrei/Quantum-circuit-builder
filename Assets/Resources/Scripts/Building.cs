@@ -97,6 +97,15 @@ public class Building : MonoBehaviour
         {
             BuildingSorter.Instance.UnregisterBuilding(this);
         }
+
+        // Remove this building from placedBuildings
+        if (GridBuildingSystem.current != null)
+        {
+            foreach (Vector3Int cell in area.allPositionsWithin)
+            {
+                GridBuildingSystem.current.placedBuildings.Remove(cell);
+            }
+        }
     }
 
     #endregion

@@ -255,6 +255,11 @@ public class GridBuildingSystem : MonoBehaviour
     {
         if (selectedBuildingForDeletion == null) return;
 
+        foreach (Vector3Int cell in selectedBuildingForDeletion.area.allPositionsWithin)
+        {
+            placedBuildings.Remove(cell);
+        }
+
         SetTilesBlock(selectedBuildingForDeletion.area, TileType.white, mainTilemap);
         Destroy(selectedBuildingForDeletion.gameObject);
 
