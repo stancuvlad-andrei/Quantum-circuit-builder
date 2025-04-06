@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 public class Path : MonoBehaviour
 {
-    public Sprite[] waveSprites;
-    public float waveDelay = 0.3f;
-    public SpriteRenderer spriteRenderer;
-    private Building building;
-    private List<Path> neighborPaths = new List<Path>();
-    private bool isAnimating = false;
+    public Sprite[] waveSprites; // Array of sprites for wave animation
+    public float waveDelay = 0.3f; // Delay between wave frames
+    public SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+    private Building building; // Reference to the Building component
+    private List<Path> neighborPaths = new List<Path>(); // List of neighboring paths
+    private bool isAnimating = false; // Flag to check if animation is in progress
+
+    #region Unity Methods
 
     private void Awake()
     {
@@ -25,10 +27,17 @@ public class Path : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Path Methods
+
     public void FindNeighbors()
     {
         neighborPaths.Clear();
-        if (building == null) return;
+        if (building == null)
+        {
+            return;
+        }
 
         Vector3Int centerCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
         Vector3Int[] directions = { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
@@ -46,58 +55,6 @@ public class Path : MonoBehaviour
         }
     }
 
-    public void StartWave(Vector3Int sourcePosition, int state = -1)
-    {
-        if (!isAnimating)
-        {
-            StartCoroutine(WaveAnimation(sourcePosition, state));
-        }
-    }
-
-    private IEnumerator WaveAnimation(Vector3Int sourcePosition, int state)
-    {
-        isAnimating = true;
-        if (waveSprites.Length >= 2)
-        {
-            spriteRenderer.sprite = waveSprites[1];
-            yield return new WaitForSeconds(waveDelay);
-
-            // Get current position
-            Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
-
-            // Calculate incoming direction (from source to current)
-            Vector3Int incomingDir = sourcePosition - currentCell;
-            incomingDir.Clamp(Vector3Int.one * -1, Vector3Int.one);
-
-            // Directions to propagate (excluding incoming)
-            Vector3Int[] directions = { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
-            foreach (var dir in directions)
-            {
-                if (dir == incomingDir) continue;
-
-                Vector3Int neighborPos = currentCell + dir;
-                if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
-                {
-                    // Skip destroyed or null neighbors
-                    if (neighbor == null || neighbor.gameObject == null) continue;
-
-                    if (neighbor.TryGetComponent<Path>(out Path path))
-                    {
-                        path.StartWave(currentCell, state);
-                    }
-                    else if (neighbor.TryGetComponent<MeasuringGate>(out MeasuringGate gate))
-                    {
-                        gate.ReceiveMeasurement(state, currentCell);
-                    }
-                }
-            }
-
-            yield return new WaitForSeconds(0.1f);
-            spriteRenderer.sprite = waveSprites[0];
-        }
-        isAnimating = false;
-    }
-
     public void ResetPath()
     {
         StopAllCoroutines();
@@ -107,4 +64,86 @@ public class Path : MonoBehaviour
             spriteRenderer.sprite = waveSprites[0];
         }
     }
+
+    #endregion
+
+    #region Animation Methods
+
+    public void StartWave(Vector3Int sourcePosition, float incomingProbability, bool isCollapsed)
+    {
+        if (isCollapsed)
+        {
+            StopAllCoroutines();
+            isAnimating = false;
+            StartCoroutine(WaveAnimation(sourcePosition, incomingProbability, isCollapsed));
+        }
+        else if (!isAnimating)
+        {
+            StartCoroutine(WaveAnimation(sourcePosition, incomingProbability, isCollapsed));
+        }
+    }
+
+    private IEnumerator WaveAnimation(Vector3Int sourcePosition, float incomingProbability, bool isCollapsed)
+    {
+        isAnimating = true;
+
+        if (waveSprites.Length >= 2)
+        {
+            spriteRenderer.sprite = waveSprites[1];
+            yield return new WaitForSeconds(waveDelay);
+
+            Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
+            Vector3Int incomingDir = sourcePosition - currentCell;
+            incomingDir.Clamp(Vector3Int.one * -1, Vector3Int.one);
+
+            float modifiedProbability = incomingProbability;
+
+            Vector3Int[] directions = { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
+
+            foreach (var dir in directions)
+            {
+                if (dir == incomingDir)
+                {
+                    continue;
+                }
+
+                Vector3Int neighborPos = currentCell + dir;
+                if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
+                {
+                    if (neighbor == null)
+                    {
+                        continue;
+                    }
+
+                    // XGate handling
+                    if (neighbor.TryGetComponent<XGate>(out XGate xGate))
+                    {
+                        float gatedProbability = xGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
+                        xGate.PropagateAfterGate(currentCell, gatedProbability, dir, newIsCollapsed);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
+                    }
+
+                    // Path handling
+                    if (neighbor.TryGetComponent<Path>(out Path path))
+                    {
+                        path.StartWave(currentCell, modifiedProbability, isCollapsed);
+                        continue;
+                    }
+
+                    // MeasuringGate handling
+                    if (neighbor.TryGetComponent<MeasuringGate>(out MeasuringGate gate))
+                    {
+                        gate.ReceiveMeasurement(currentCell, modifiedProbability, isCollapsed);
+                        continue;
+                    }
+                }
+            }
+            spriteRenderer.sprite = waveSprites[0];
+            isAnimating = false;
+        }
+    }
+
+    #endregion
+
 }

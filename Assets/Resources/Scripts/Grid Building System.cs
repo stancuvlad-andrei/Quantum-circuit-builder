@@ -48,7 +48,9 @@ public class GridBuildingSystem : MonoBehaviour
 
         // Initialize other components here
         if (mainTilemap == null)
+        {
             Debug.LogError("Main Tilemap not assigned!");
+        }
     }
 
     private void Start()
@@ -69,7 +71,10 @@ public class GridBuildingSystem : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (EventSystem.current.IsPointerOverGameObject(0)) return;
+            if (EventSystem.current.IsPointerOverGameObject(0))
+            {
+                return;
+            }
 
             if (!temp.placed)
             {
@@ -203,7 +208,10 @@ public class GridBuildingSystem : MonoBehaviour
             }
         }
 
-        if (buildingSorter != null) buildingSorter.RegisterBuilding(temp);
+        if (buildingSorter != null)
+        {
+            buildingSorter.RegisterBuilding(temp);
+        }
     }
 
     public Building GetBuildingAt(Vector3Int cell)
@@ -265,14 +273,18 @@ public class GridBuildingSystem : MonoBehaviour
 
         // Hide both buttons
         if (deleteButton != null)
+        {
             deleteButton.gameObject.SetActive(false);
+        }
+
         if (relocateButton != null)
+        {
             relocateButton.gameObject.SetActive(false);
+        }
 
         // Clear inventory UI
         inventoryUISlotImage.enabled = false;
         inventoryUISlotImage.sprite = null;
-
         selectedBuildingForDeletion = null;
     }
 
@@ -298,7 +310,10 @@ public class GridBuildingSystem : MonoBehaviour
 
     public void RelocateSelectedBuilding()
     {
-        if (selectedBuildingForRelocation == null) return;
+        if (selectedBuildingForRelocation == null)
+        {
+            return;
+        }
 
         // Free up the original area
         SetTilesBlock(selectedBuildingForRelocation.area, TileType.white, mainTilemap);
@@ -366,4 +381,5 @@ public class GridBuildingSystem : MonoBehaviour
     }
 
     #endregion
+
 }

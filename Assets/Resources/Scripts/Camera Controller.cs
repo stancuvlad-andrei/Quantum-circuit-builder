@@ -95,7 +95,10 @@ public class CameraController : MonoBehaviour
     private void HandleCameraZoom()
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll == 0 || EventSystem.current.IsPointerOverGameObject()) return;
+        if (scroll == 0 || EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        } 
 
         float newSize = Mathf.Clamp(
             cam.orthographicSize - scroll * zoomSpeed,

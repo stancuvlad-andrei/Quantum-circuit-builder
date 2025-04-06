@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-    public bool placed { get; set; }
+    public bool placed { get; set; } // Indicates if the building is placed
     public BoundsInt area; // Area occupied by building
     public Transform spriteTransform; // Transform of the sprite
     public SpriteRenderer spriteRenderer; // Sprite renderer of the sprite
@@ -109,4 +109,5 @@ public class Building : MonoBehaviour
     }
 
     #endregion
+
 }

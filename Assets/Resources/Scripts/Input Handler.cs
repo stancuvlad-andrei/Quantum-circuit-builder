@@ -27,10 +27,14 @@ public class InputHandler : MonoBehaviour
         }
 
         if (mainCamera == null)
+        {
             Debug.LogError("Main camera not found!");
+        }
 
         if (gridSystem == null)
+        {
             Debug.LogError("GridBuildingSystem not found! Make sure it's in the scene and initialized.");
+        }
     }
 
     void Start()
@@ -49,13 +53,22 @@ public class InputHandler : MonoBehaviour
 
     public void onClick(InputAction.CallbackContext context)
     {
-        if (!context.started) return;
-        if (gridSystem == null) return;
+        if (!context.started)
+        {
+            return;
+        }
+        if (gridSystem == null)
+        {
+            return;
+        }
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray);
 
-        if (rayHit.collider == null) return;
+        if (rayHit.collider == null)
+        {
+            return;
+        }
 
         Building building = rayHit.collider.GetComponent<Building>();
         if (building != null && building.placed)

@@ -2,10 +2,13 @@ using UnityEngine;
 
 public class Qubit : MonoBehaviour
 {
-    public Sprite activeSprite;
-    public Sprite inactiveSprite;
-    private SpriteRenderer spriteRenderer;
-    public int state;
+    public Sprite activeSprite; // Sprite when active
+    public Sprite inactiveSprite; // Sprite when inactive
+    private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+    [Range(0, 1)] public float probability = 0.5f; // Probability of state 1
+    public bool collapsed; // True after measurement
+
+    #region Unity Methods
 
     private void Awake()
     {
@@ -20,21 +23,26 @@ public class Qubit : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Qubit Methods
+
     public void Activate()
     {
-        state = Random.Range(0, 2);
+        if (!collapsed)
+        {
+            // Only randomize if not collapsed
+            probability = Random.Range(0f, 1f);
+        }
+
         if (spriteRenderer != null && activeSprite != null)
         {
             spriteRenderer.sprite = activeSprite;
         }
 
-        // Get current position
         Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
-
-        // Trigger adjacent paths with qubit's position
         TriggerAdjacentPaths(currentCell);
-        Debug.Log($"Qubit activated at {transform.position}");
-        Debug.Log($"Qubit state: {state}");
+        Debug.Log($"Qubit activated. Probability: {probability}");
     }
 
     private void TriggerAdjacentPaths(Vector3Int sourcePosition)
@@ -47,10 +55,23 @@ public class Qubit : MonoBehaviour
             {
                 if (neighbor.TryGetComponent<Path>(out Path path))
                 {
-                    path.StartWave(sourcePosition, state);
+                    path.StartWave(sourcePosition, probability, collapsed);
                 }
             }
         }
+    }
+
+    public void CollapseState(int measuredState)
+    {
+        probability = measuredState; // 0 or 1
+        collapsed = true;
+        Debug.Log($"Qubit collapsed to state: {measuredState}");
+    }
+
+    public void ResetState()
+    {
+        collapsed = false;
+        probability = 0.5f;
     }
 
     public void Deactivate()
@@ -60,4 +81,7 @@ public class Qubit : MonoBehaviour
             spriteRenderer.sprite = inactiveSprite;
         }
     }
+
+    #endregion
+
 }

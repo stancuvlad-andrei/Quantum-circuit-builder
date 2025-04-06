@@ -5,12 +5,13 @@ using System.Collections;
 
 public class SimulationManager : MonoBehaviour
 {
-    public Button startButton;
-    public TextMeshProUGUI buttonText;
-    public float waveInterval = 2f;
+    public Button startButton; // Button to start/stop simulation
+    public TextMeshProUGUI buttonText; // Text on the button
+    public float waveInterval = 2f; // Interval for wave activation
+    private bool simulationRunning = false; // Flag to check if simulation is running
+    private Coroutine waveCoroutine; // Coroutine for wave loop
 
-    private bool simulationRunning = false;
-    private Coroutine waveCoroutine;
+    #region Unity Methods
 
     private void Start()
     {
@@ -18,11 +19,21 @@ public class SimulationManager : MonoBehaviour
         UpdateButtonText();
     }
 
+    #endregion
+
+    #region Simulation Control
+
     public void ToggleSimulation()
     {
         simulationRunning = !simulationRunning;
-        if (simulationRunning) StartSimulation();
-        else StopSimulation();
+        if (simulationRunning)
+        {
+            StartSimulation();
+        }
+        else
+        {
+            StopSimulation();
+        }
         UpdateButtonText();
     }
 
@@ -32,20 +43,13 @@ public class SimulationManager : MonoBehaviour
         waveCoroutine = StartCoroutine(WaveLoop());
     }
 
-    private IEnumerator WaveLoop()
-    {
-        while (simulationRunning)
-        {
-            yield return new WaitForSeconds(waveInterval);
-            ActivateAllQubits();
-        }
-    }
-
     private void ActivateAllQubits()
     {
         Qubit[] qubits = FindObjectsOfType<Qubit>();
+
         foreach (Qubit qubit in qubits)
         {
+            qubit.ResetState();
             qubit.Activate();
         }
     }
@@ -53,15 +57,19 @@ public class SimulationManager : MonoBehaviour
     private void StopSimulation()
     {
         if (waveCoroutine != null)
+        {
             StopCoroutine(waveCoroutine);
+        }
 
         Qubit[] qubits = FindObjectsOfType<Qubit>();
+
         foreach (Qubit qubit in qubits)
         {
             qubit.Deactivate();
         }
 
         Path[] paths = FindObjectsOfType<Path>();
+
         foreach (Path path in paths)
         {
             path.ResetPath();
@@ -84,4 +92,20 @@ public class SimulationManager : MonoBehaviour
             buttonText.text = simulationRunning ? "Stop Simulation" : "Start Simulation";
         }
     }
+
+    #endregion
+
+    #region Coroutine
+
+    private IEnumerator WaveLoop()
+    {
+        while (simulationRunning)
+        {
+            yield return new WaitForSeconds(waveInterval);
+            ActivateAllQubits();
+        }
+    }
+
+    #endregion
+
 }

@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class MeasuringGate : MonoBehaviour
 {
-    public Sprite inactiveSprite;
-    public Sprite state0Sprite;
-    public Sprite state1Sprite;
-    private SpriteRenderer spriteRenderer;
+    public Sprite inactiveSprite; // Sprite when inactive
+    public Sprite state0Sprite; // Sprite for state 0
+    public Sprite state1Sprite; // Sprite for state 1
+    private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+
+    #region Unity Methods
 
     private void Awake()
     {
@@ -13,46 +15,67 @@ public class MeasuringGate : MonoBehaviour
         ResetState();
     }
 
-    public void ReceiveMeasurement(int state, Vector3Int sourcePosition)
+    #endregion
+
+    #region Measurement Methods
+
+    public void ReceiveMeasurement(Vector3Int sourcePosition, float incomingProbability, bool isCollapsed)
     {
-        if (spriteRenderer == null) return;
+        if (spriteRenderer == null)
+        {
+            return;
+        }
+
+        // Collapse the qubit's state
+        int measuredState = (Random.value <= incomingProbability) ? 1 : 0;
 
         // Update sprite based on state
-        if (state == 0 && state0Sprite != null)
-        {
-            spriteRenderer.sprite = state0Sprite;
-        }
-        else if (state == 1 && state1Sprite != null)
-        {
-            spriteRenderer.sprite = state1Sprite;
-        }
+        spriteRenderer.sprite = (measuredState == 0) ? state0Sprite : state1Sprite;
 
-        // Calculate current position
+        // Propagate collapsed state (0 or 1 probability)
         Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
-
-        // Calculate incoming direction (from source to current)
         Vector3Int incomingDir = sourcePosition - currentCell;
         incomingDir.Clamp(Vector3Int.one * -1, Vector3Int.one);
 
-        // Propagate to adjacent paths (excluding incoming direction)
         Vector3Int[] directions = { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
+
         foreach (var dir in directions)
         {
-            if (dir == incomingDir) continue;
+            if (dir == incomingDir)
+            {
+                continue;
+            }
 
             Vector3Int neighborPos = currentCell + dir;
             if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
             {
-                // Skip destroyed or null neighbors
-                if (neighbor == null || neighbor.gameObject == null) continue;
+                if (neighbor == null)
+                {
+                    continue;
+                }
 
                 if (neighbor.TryGetComponent<Path>(out Path path))
                 {
-                    path.StartWave(currentCell, state);
+                    path.StartWave(currentCell, measuredState, true); // Pass measuredState as 0 or 1
+                }
+
+                else if (neighbor.TryGetComponent<MeasuringGate>(out MeasuringGate measuringGate))
+                {
+                    measuringGate.ReceiveMeasurement(currentCell, measuredState, true); // Pass measuredState
+                }
+
+                else if (neighbor.TryGetComponent<XGate>(out XGate xGate))
+                {
+                    float modifiedProbability = xGate.ApplyGate(measuredState, currentCell);
+                    xGate.PropagateAfterGate(currentCell, modifiedProbability, dir, true);
                 }
             }
         }
     }
+
+    #endregion
+
+    #region State Management
 
     public void ResetState()
     {
@@ -61,4 +84,7 @@ public class MeasuringGate : MonoBehaviour
             spriteRenderer.sprite = inactiveSprite;
         }
     }
+
+    #endregion
+
 }
