@@ -84,24 +84,6 @@ public class ZGate : MonoBehaviour
                 {
                     gate.ReceiveMeasurement(currentCell, modifiedProbability, isCollapsed);
                 }
-
-                else if (neighbor.TryGetComponent<XGate>(out XGate xGate))
-                {
-                    float newProbability = xGate.ApplyGate(modifiedProbability, currentCell);
-                    xGate.PropagateAfterGate(currentCell, newProbability, dir, isCollapsed);
-                }
-
-                else if (neighbor.TryGetComponent<YGate>(out YGate yGate))
-                {
-                    float newProbability = yGate.ApplyGate(modifiedProbability, currentCell);
-                    yGate.PropagateAfterGate(currentCell, newProbability, dir, isCollapsed);
-                }
-
-                else if (neighbor.TryGetComponent<ZGate>(out ZGate zGate))
-                {
-                    float newProbability = zGate.ApplyGate(modifiedProbability, currentCell);
-                    zGate.PropagateAfterGate(currentCell, newProbability, dir, isCollapsed);
-                }
             }
         }
     }
@@ -121,29 +103,6 @@ public class ZGate : MonoBehaviour
             if (neighbor.TryGetComponent<Path>(out Path path))
             {
                 path.StartWave(currentCell, modifiedProbability, isCollapsed);
-            }
-
-            else if (neighbor.TryGetComponent<MeasuringGate>(out MeasuringGate gate))
-            {
-                gate.ReceiveMeasurement(currentCell, modifiedProbability, isCollapsed);
-            }
-
-            else if (neighbor.TryGetComponent<XGate>(out XGate xGate))
-            {
-                float newProbability = xGate.ApplyGate(modifiedProbability, currentCell);
-                xGate.PropagateAfterGate(currentCell, newProbability, direction, isCollapsed);
-            }
-
-            else if (neighbor.TryGetComponent<YGate>(out YGate yGate))
-            {
-                float newProbability = yGate.ApplyGate(modifiedProbability, currentCell);
-                yGate.PropagateAfterGate(currentCell, newProbability, direction, isCollapsed);
-            }
-
-            else if (neighbor.TryGetComponent<ZGate>(out ZGate zGate))
-            {
-                float newProbability = zGate.ApplyGate(modifiedProbability, currentCell);
-                zGate.PropagateAfterGate(currentCell, newProbability, direction, isCollapsed);
             }
         }
     }

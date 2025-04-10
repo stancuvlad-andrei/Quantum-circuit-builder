@@ -1,7 +1,8 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class XGate : MonoBehaviour
+public class HGate : MonoBehaviour
 {
     public Sprite defaultSprite; // Default sprite when inactive
     public Sprite activeSprite; // Sprite when active
@@ -21,26 +22,21 @@ public class XGate : MonoBehaviour
 
     #endregion
 
-    #region XGate Methods
+    #region ZGate Methods
 
     public float ApplyGate(float incomingProbability, Vector3Int sourcePosition)
     {
         StartCoroutine(ActivateVisual());
 
-        float result;
+        // Force probability to 50% and uncollapse the qubit
+        float result = 0.5f;
+        bool wasCollapsed = (incomingProbability == 0f || incomingProbability == 1f);
+        bool newIsCollapsed = false; // Always uncollapse after H gate
 
-        if (incomingProbability == 0f || incomingProbability == 1f)
-        {
-            result = 1f - incomingProbability;
-            Debug.Log($"XGate (Collapsed): Flipped {incomingProbability} to {result}");
-        }
-        else
-        {
-            result = 1f - incomingProbability;
-            Debug.Log($"XGate (Uncollapsed): Flipped {incomingProbability} to {result}");
-        }
+        Debug.Log($"HGate: Reset probability to 50% (was collapsed: {wasCollapsed})");
 
-        StartCoroutine(PropagateWave(result, incomingProbability == 0f || incomingProbability == 1f, sourcePosition));
+        // Propagate with new probability and uncollapsed state
+        StartCoroutine(PropagateWave(result, newIsCollapsed, sourcePosition));
 
         return result;
     }

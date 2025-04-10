@@ -115,8 +115,22 @@ public class Path : MonoBehaviour
                         continue;
                     }
 
+                    // Path handling
+                    if (neighbor.TryGetComponent<Path>(out Path path))
+                    {
+                        path.StartWave(currentCell, modifiedProbability, isCollapsed);
+                        continue;
+                    }
+
+                    // MeasuringGate handling
+                    else if (neighbor.TryGetComponent<MeasuringGate>(out MeasuringGate gate))
+                    {
+                        gate.ReceiveMeasurement(currentCell, modifiedProbability, isCollapsed);
+                        continue;
+                    }
+
                     // XGate handling
-                    if (neighbor.TryGetComponent<XGate>(out XGate xGate))
+                    else if (neighbor.TryGetComponent<XGate>(out XGate xGate))
                     {
                         float gatedProbability = xGate.ApplyGate(modifiedProbability, currentCell);
                         bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
@@ -142,18 +156,13 @@ public class Path : MonoBehaviour
                         Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
                     }
 
-                    // Path handling
-                    if (neighbor.TryGetComponent<Path>(out Path path))
+                    // HGate handling
+                    else if (neighbor.TryGetComponent<HGate>(out HGate hGate))
                     {
-                        path.StartWave(currentCell, modifiedProbability, isCollapsed);
-                        continue;
-                    }
-
-                    // MeasuringGate handling
-                    if (neighbor.TryGetComponent<MeasuringGate>(out MeasuringGate gate))
-                    {
-                        gate.ReceiveMeasurement(currentCell, modifiedProbability, isCollapsed);
-                        continue;
+                        float gatedProbability = hGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = false; // H gates always produce uncollapsed states
+                        hGate.PropagateAfterGate(currentCell, gatedProbability, dir, newIsCollapsed);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
                     }
                 }
             }
