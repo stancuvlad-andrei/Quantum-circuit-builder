@@ -124,6 +124,24 @@ public class Path : MonoBehaviour
                         Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
                     }
 
+                    // YGate handling
+                    else if (neighbor.TryGetComponent<YGate>(out YGate yGate))
+                    {
+                        float gatedProbability = yGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
+                        yGate.PropagateAfterGate(currentCell, gatedProbability, dir, newIsCollapsed);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
+                    }
+
+                    // ZGate handling
+                    else if (neighbor.TryGetComponent<ZGate>(out ZGate zGate))
+                    {
+                        float gatedProbability = zGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
+                        zGate.PropagateAfterGate(currentCell, gatedProbability, dir, newIsCollapsed);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
+                    }
+
                     // Path handling
                     if (neighbor.TryGetComponent<Path>(out Path path))
                     {

@@ -69,6 +69,18 @@ public class MeasuringGate : MonoBehaviour
                     float modifiedProbability = xGate.ApplyGate(measuredState, currentCell);
                     xGate.PropagateAfterGate(currentCell, modifiedProbability, dir, true);
                 }
+
+                else if (neighbor.TryGetComponent<YGate>(out YGate yGate))
+                {
+                    float modifiedProbability = yGate.ApplyGate(measuredState, currentCell);
+                    yGate.PropagateAfterGate(currentCell, modifiedProbability, dir, true);
+                }
+
+                else if (neighbor.TryGetComponent<ZGate>(out ZGate zGate))
+                {
+                    float modifiedProbability = zGate.ApplyGate(measuredState, currentCell);
+                    zGate.PropagateAfterGate(currentCell, modifiedProbability, dir, true);
+                }
             }
         }
     }

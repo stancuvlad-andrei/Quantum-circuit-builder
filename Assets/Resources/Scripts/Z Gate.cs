@@ -1,7 +1,8 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class XGate : MonoBehaviour
+public class ZGate : MonoBehaviour
 {
     public Sprite defaultSprite; // Default sprite when inactive
     public Sprite activeSprite; // Sprite when active
@@ -21,7 +22,7 @@ public class XGate : MonoBehaviour
 
     #endregion
 
-    #region XGate Methods
+    #region ZGate Methods
 
     public float ApplyGate(float incomingProbability, Vector3Int sourcePosition)
     {
@@ -32,12 +33,12 @@ public class XGate : MonoBehaviour
         if (incomingProbability == 0f || incomingProbability == 1f)
         {
             result = 1f - incomingProbability;
-            Debug.Log($"XGate (Collapsed): Flipped {incomingProbability} to {result}");
+            Debug.Log($"ZGate (Collapsed): Flipped {incomingProbability} to {result}");
         }
         else
         {
             result = 1f - incomingProbability;
-            Debug.Log($"XGate (Uncollapsed): Flipped {incomingProbability} to {result}");
+            Debug.Log($"ZGate (Uncollapsed): Flipped {incomingProbability} to {result}");
         }
 
         StartCoroutine(PropagateWave(result, incomingProbability == 0f || incomingProbability == 1f, sourcePosition));
