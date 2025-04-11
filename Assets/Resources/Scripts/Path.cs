@@ -164,6 +164,24 @@ public class Path : MonoBehaviour
                         hGate.PropagateAfterGate(currentCell, gatedProbability, dir, newIsCollapsed);
                         Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
                     }
+
+                    // SGate handling
+                    else if (neighbor.TryGetComponent<SGate>(out SGate sGate))
+                    {
+                        float gatedProbability = sGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
+                        sGate.PropagateAfterGate(currentCell, gatedProbability, dir, newIsCollapsed);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
+                    }
+
+                    // TGate handling
+                    else if (neighbor.TryGetComponent<TGate>(out TGate tGate))
+                    {
+                        float gatedProbability = tGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
+                        tGate.PropagateAfterGate(currentCell, gatedProbability, dir, newIsCollapsed);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
+                    }
                 }
             }
             spriteRenderer.sprite = waveSprites[0];

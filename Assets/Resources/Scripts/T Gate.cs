@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HGate : MonoBehaviour
+public class TGate : MonoBehaviour
 {
     public Sprite defaultSprite; // Default sprite when inactive
     public Sprite activeSprite; // Sprite when active
@@ -22,22 +22,32 @@ public class HGate : MonoBehaviour
 
     #endregion
 
-    #region HGate Methods
+    #region TGate Methods
 
     public float ApplyGate(float incomingProbability, Vector3Int sourcePosition)
     {
         StartCoroutine(ActivateVisual());
 
-        // Force probability to 50% and uncollapse the qubit
-        float result = 0.5f;
-        bool wasCollapsed = (incomingProbability == 0f || incomingProbability == 1f);
-        bool newIsCollapsed = false; // Always uncollapse after H gate
+        float result = incomingProbability;
 
-        Debug.Log($"HGate: Reset probability to 50% (was collapsed: {wasCollapsed})");
+        if (result != 0.5f)
+        {
+            // Apply 25% adjustment
+            if (result > 0.5f)
+            {
+                result -= 0.25f; // Subtract 25% for probabilities >50%
+            }
+            else
+            {
+                result += 0.25f; // Add 25% for probabilities <50%
+            }
 
-        // Propagate with new probability and uncollapsed state
-        StartCoroutine(PropagateWave(result, newIsCollapsed, sourcePosition));
+            // Clamp between 0% and 100%
+            result = Mathf.Clamp01(result);
+        }
 
+        Debug.Log($"TGate: Adjusted probability from {incomingProbability} to {result}");
+        StartCoroutine(PropagateWave(result, incomingProbability == 0f || incomingProbability == 1f, sourcePosition));
         return result;
     }
 
