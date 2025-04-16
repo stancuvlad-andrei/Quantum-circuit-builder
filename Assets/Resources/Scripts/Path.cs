@@ -190,6 +190,22 @@ public class Path : MonoBehaviour
                         bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
                         Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
                     }
+
+                    // CZGate handling
+                    else if (neighbor.TryGetComponent<CZGate>(out CZGate czGate))
+                    {
+                        float gatedProbability = czGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
+                    }
+
+                    // SPGate handling
+                    else if (neighbor.TryGetComponent<SPGate>(out SPGate spGate))
+                    {
+                        float gatedProbability = spGate.ApplyGate(modifiedProbability, currentCell);
+                        bool newIsCollapsed = (gatedProbability == 0f || gatedProbability == 1f);
+                        Debug.Log($"PropagateAfterGate called with isCollapsed = {newIsCollapsed}");
+                    }
                 }
             }
             spriteRenderer.sprite = waveSprites[0];

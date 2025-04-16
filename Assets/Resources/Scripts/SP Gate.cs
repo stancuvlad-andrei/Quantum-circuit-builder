@@ -2,13 +2,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CXGate : MonoBehaviour
+public class SPGate : MonoBehaviour
 {
     public Sprite defaultSprite; // Default sprite when inactive
-    public Sprite activeSprite; // Sprite when active
+    public Sprite activeSprite;  // Sprite when active
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
-    private ControlData controlSignal = null; // Control signal data
+    private ControlData firstSignal = null; // First signal received
 
     private class ControlData
     {
@@ -30,7 +30,7 @@ public class CXGate : MonoBehaviour
 
     #endregion
 
-    #region CXGate Methods
+    #region SPGate Methods
 
     public float ApplyGate(float incomingProbability, Vector3Int sourcePosition)
     {
@@ -39,58 +39,50 @@ public class CXGate : MonoBehaviour
         Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
         Vector3Int incomingDir = sourcePosition - currentCell;
 
-        Debug.Log($"CXGate received signal from {incomingDir}");
+        Debug.Log($"SPGate received signal from {incomingDir}");
 
-        if (controlSignal == null)
+        if (firstSignal == null)
         {
-            // First signal: store as control
-            controlSignal = new ControlData
+            // First signal: store it
+            firstSignal = new ControlData
             {
                 probability = incomingProbability,
                 isCollapsed = (incomingProbability == 0f || incomingProbability == 1f),
                 inputDirection = incomingDir
             };
 
-            Debug.Log($"CXGate: Stored control signal from {incomingDir} (probability: {incomingProbability})");
+            Debug.Log($"SPGate: Stored first signal from {incomingDir} (probability: {incomingProbability})");
             return incomingProbability;
         }
         else
         {
-            // Second signal: treat as target
-            if (incomingDir == controlSignal.inputDirection || incomingDir == -controlSignal.inputDirection)
+            // Second signal: process together
+            if (incomingDir == firstSignal.inputDirection || incomingDir == -firstSignal.inputDirection)
             {
-                Debug.Log($"CXGate: Invalid target direction {incomingDir} (same or opposite of control)");
+                Debug.Log($"SPGate: Invalid second direction {incomingDir} (same or opposite of first)");
                 return incomingProbability;
             }
 
-            Debug.Log($"CXGate: Received target signal from {incomingDir}");
+            Debug.Log($"SPGate: Received second signal from {incomingDir}");
 
-            float targetProbability = incomingProbability;
+            float swappedFirst = incomingProbability;
+            float swappedSecond = firstSignal.probability;
 
-            // If control qubit is collapsed in 1, flip the target probability
-            if (controlSignal.isCollapsed && controlSignal.probability == 1f)
-            {
-                targetProbability = 1f - incomingProbability;
-                Debug.Log("CXGate: Control qubit is 1, flipping target qubit probability.");
-            }
-            else
-            {
-                Debug.Log("CXGate: Control qubit is not 1, target qubit remains unchanged.");
-            }
+            Debug.Log($"SPGate: Swapping states: first={firstSignal.probability}, second={incomingProbability}");
 
-            // Start propagation coroutine
+            // Start propagation
             StartCoroutine(PropagateBoth(
-                controlSignal.inputDirection,
+                firstSignal.inputDirection,
                 incomingDir,
-                controlSignal.probability,
-                targetProbability,
-                controlSignal.isCollapsed
+                swappedFirst,
+                swappedSecond,
+                firstSignal.isCollapsed || (incomingProbability == 0f || incomingProbability == 1f)
             ));
 
-            // Reset control signal after use
-            controlSignal = null;
+            // Clear stored signal
+            firstSignal = null;
 
-            return targetProbability;
+            return swappedSecond;
         }
     }
 
@@ -98,19 +90,19 @@ public class CXGate : MonoBehaviour
 
     #region Wave Propagation
 
-    private IEnumerator PropagateBoth(Vector3Int controlInputDir, Vector3Int targetInputDir, float controlProb, float targetProb, bool controlIsCollapsed)
+    private IEnumerator PropagateBoth(Vector3Int firstInputDir, Vector3Int secondInputDir, float firstProb, float secondProb, bool isCollapsed)
     {
-        Debug.Log($"CXGate: Waiting {activationTime}s before propagation...");
+        Debug.Log($"SPGate: Waiting {activationTime}s before propagation...");
         yield return new WaitForSeconds(activationTime);
 
-        Vector3Int controlOut = -controlInputDir;
-        Vector3Int targetOut = -targetInputDir;
+        Vector3Int firstOut = -firstInputDir;
+        Vector3Int secondOut = -secondInputDir;
 
-        Debug.Log($"CXGate: Propagating control ({controlProb}) to {controlOut}");
-        PropagateDirection(controlOut, controlProb, controlIsCollapsed);
+        Debug.Log($"SPGate: Propagating first (swapped={firstProb}) to {firstOut}");
+        PropagateDirection(firstOut, firstProb, isCollapsed);
 
-        Debug.Log($"CXGate: Propagating target ({targetProb}) to {targetOut}");
-        PropagateDirection(targetOut, targetProb, controlIsCollapsed);
+        Debug.Log($"SPGate: Propagating second (swapped={secondProb}) to {secondOut}");
+        PropagateDirection(secondOut, secondProb, isCollapsed);
     }
 
     private void PropagateDirection(Vector3Int direction, float probability, bool isCollapsed)
@@ -122,7 +114,7 @@ public class CXGate : MonoBehaviour
         {
             if (neighbor.TryGetComponent<Path>(out Path path))
             {
-                Debug.Log($"CXGate: Forwarding signal to {nextCell}");
+                Debug.Log($"SPGate: Forwarding signal to {nextCell}");
                 path.StartWave(currentCell, probability, isCollapsed);
             }
         }

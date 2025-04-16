@@ -2,13 +2,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CXGate : MonoBehaviour
+public class CZGate : MonoBehaviour
 {
     public Sprite defaultSprite; // Default sprite when inactive
     public Sprite activeSprite; // Sprite when active
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
-    private ControlData controlSignal = null; // Control signal data
+    private ControlData controlSignal = null; // First arriving signal
 
     private class ControlData
     {
@@ -30,7 +30,7 @@ public class CXGate : MonoBehaviour
 
     #endregion
 
-    #region CXGate Methods
+    #region CZGate Methods
 
     public float ApplyGate(float incomingProbability, Vector3Int sourcePosition)
     {
@@ -39,11 +39,11 @@ public class CXGate : MonoBehaviour
         Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
         Vector3Int incomingDir = sourcePosition - currentCell;
 
-        Debug.Log($"CXGate received signal from {incomingDir}");
+        Debug.Log($"CZGate received signal from {incomingDir}");
 
         if (controlSignal == null)
         {
-            // First signal: store as control
+            // First signal: store it
             controlSignal = new ControlData
             {
                 probability = incomingProbability,
@@ -51,46 +51,49 @@ public class CXGate : MonoBehaviour
                 inputDirection = incomingDir
             };
 
-            Debug.Log($"CXGate: Stored control signal from {incomingDir} (probability: {incomingProbability})");
+            Debug.Log($"CZGate: Stored first signal from {incomingDir} (probability: {incomingProbability})");
             return incomingProbability;
         }
         else
         {
-            // Second signal: treat as target
+            // Second signal: process together
             if (incomingDir == controlSignal.inputDirection || incomingDir == -controlSignal.inputDirection)
             {
-                Debug.Log($"CXGate: Invalid target direction {incomingDir} (same or opposite of control)");
+                Debug.Log($"CZGate: Invalid second direction {incomingDir} (same or opposite of first)");
                 return incomingProbability;
             }
 
-            Debug.Log($"CXGate: Received target signal from {incomingDir}");
+            Debug.Log($"CZGate: Received second signal from {incomingDir}");
 
-            float targetProbability = incomingProbability;
+            float finalControlProb = controlSignal.probability;
+            float finalTargetProb = incomingProbability;
 
-            // If control qubit is collapsed in 1, flip the target probability
-            if (controlSignal.isCollapsed && controlSignal.probability == 1f)
+            // If both are collapsed in 1, flip both to 0
+            if (controlSignal.isCollapsed && controlSignal.probability == 1f &&
+                (incomingProbability == 1f))
             {
-                targetProbability = 1f - incomingProbability;
-                Debug.Log("CXGate: Control qubit is 1, flipping target qubit probability.");
+                finalControlProb = 0f;
+                finalTargetProb = 0f;
+                Debug.Log("CZGate: Both signals are 1, flipping both to 0");
             }
             else
             {
-                Debug.Log("CXGate: Control qubit is not 1, target qubit remains unchanged.");
+                Debug.Log("CZGate: Condition not met, both signals continue unchanged.");
             }
 
-            // Start propagation coroutine
+            // Start propagation
             StartCoroutine(PropagateBoth(
                 controlSignal.inputDirection,
                 incomingDir,
-                controlSignal.probability,
-                targetProbability,
-                controlSignal.isCollapsed
+                finalControlProb,
+                finalTargetProb,
+                true
             ));
 
-            // Reset control signal after use
+            // Clear stored signal
             controlSignal = null;
 
-            return targetProbability;
+            return finalTargetProb;
         }
     }
 
@@ -98,19 +101,19 @@ public class CXGate : MonoBehaviour
 
     #region Wave Propagation
 
-    private IEnumerator PropagateBoth(Vector3Int controlInputDir, Vector3Int targetInputDir, float controlProb, float targetProb, bool controlIsCollapsed)
+    private IEnumerator PropagateBoth(Vector3Int firstInputDir, Vector3Int secondInputDir, float firstProb, float secondProb, bool isCollapsed)
     {
-        Debug.Log($"CXGate: Waiting {activationTime}s before propagation...");
+        Debug.Log($"CZGate: Waiting {activationTime}s before propagation...");
         yield return new WaitForSeconds(activationTime);
 
-        Vector3Int controlOut = -controlInputDir;
-        Vector3Int targetOut = -targetInputDir;
+        Vector3Int firstOut = -firstInputDir;
+        Vector3Int secondOut = -secondInputDir;
 
-        Debug.Log($"CXGate: Propagating control ({controlProb}) to {controlOut}");
-        PropagateDirection(controlOut, controlProb, controlIsCollapsed);
+        Debug.Log($"CZGate: Propagating first ({firstProb}) to {firstOut}");
+        PropagateDirection(firstOut, firstProb, isCollapsed);
 
-        Debug.Log($"CXGate: Propagating target ({targetProb}) to {targetOut}");
-        PropagateDirection(targetOut, targetProb, controlIsCollapsed);
+        Debug.Log($"CZGate: Propagating second ({secondProb}) to {secondOut}");
+        PropagateDirection(secondOut, secondProb, isCollapsed);
     }
 
     private void PropagateDirection(Vector3Int direction, float probability, bool isCollapsed)
@@ -122,7 +125,7 @@ public class CXGate : MonoBehaviour
         {
             if (neighbor.TryGetComponent<Path>(out Path path))
             {
-                Debug.Log($"CXGate: Forwarding signal to {nextCell}");
+                Debug.Log($"CZGate: Forwarding signal to {nextCell}");
                 path.StartWave(currentCell, probability, isCollapsed);
             }
         }
