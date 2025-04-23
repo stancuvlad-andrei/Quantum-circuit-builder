@@ -345,6 +345,25 @@ public class GridBuildingSystem : MonoBehaviour
         selectedBuildingForRelocation = null;
     }
 
+    public void ClearSelection()
+    {
+        // Hide both buttons
+        deleteButton.gameObject.SetActive(false);
+        relocateButton.gameObject.SetActive(false);
+
+        // Clear inventory UI
+        if (inventoryUISlotImage != null)
+        {
+            inventoryUISlotImage.enabled = false;
+            inventoryUISlotImage.sprite = null;
+        }
+
+        // Forget any previously selected buildings
+        selectedBuildingForDeletion = null;
+        selectedBuildingForRelocation = null;
+    }
+
+
     #endregion
 
     #region Helper Methods

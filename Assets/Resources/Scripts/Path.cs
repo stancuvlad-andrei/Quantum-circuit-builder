@@ -33,24 +33,37 @@ public class Path : MonoBehaviour
 
     public void FindNeighbors()
     {
-        neighborPaths.Clear();
-        if (building == null)
-        {
-            return;
+        // If *this* Path or its Building has already been destroyed, do nothing.
+        if (this == null || building == null)
+        { 
+            return; 
         }
 
-        Vector3Int centerCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
+        // Clear out any stale entries
+        neighborPaths.Clear();
+
+        var grid = GridBuildingSystem.current;
+        if (grid == null) 
+        { 
+            return; 
+        }
+
+        var centerCell = grid.gridLayout.WorldToCell(transform.position);
         Vector3Int[] directions = { Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down };
 
         foreach (var dir in directions)
         {
-            Vector3Int neighborPos = centerCell + dir;
-            if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
+            var neighborPos = centerCell + dir;
+            if (!grid.placedBuildings.TryGetValue(neighborPos, out Building neighbor) || neighbor == null)
+            { 
+                continue; 
+            }
+
+            // If the neighbor’s GameObject survived, get its Path
+            Path neighborPath = neighbor.GetComponent<Path>();
+            if (neighborPath != null && neighborPath != this)
             {
-                if (neighbor.TryGetComponent<Path>(out Path path) && path != this)
-                {
-                    neighborPaths.Add(path);
-                }
+                neighborPaths.Add(neighborPath);
             }
         }
     }

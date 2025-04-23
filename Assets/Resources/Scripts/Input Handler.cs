@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class InputHandler : MonoBehaviour
@@ -53,28 +54,37 @@ public class InputHandler : MonoBehaviour
 
     public void onClick(InputAction.CallbackContext context)
     {
-        if (!context.started)
-        {
-            return;
+        if (!context.started) 
+        { 
+            return; 
         }
-        if (gridSystem == null)
-        {
-            return;
+
+        if (gridSystem == null) 
+        { 
+            return; 
         }
+
+        // Raycast only if not over UI
+        if (EventSystem.current.IsPointerOverGameObject()) return;
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        RaycastHit2D rayHit = Physics2D.GetRayIntersection(ray);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        if (rayHit.collider == null)
+        // If we hit nothing clear any selection
+        if (hit.collider == null)
         {
+            // (optionally skip if user is panning / dragging the view)
+            gridSystem.ClearSelection();
             return;
         }
 
-        Building building = rayHit.collider.GetComponent<Building>();
-        if (building != null && building.placed)
+        // If we hit a placed Building switch selection
+        Building b = hit.collider.GetComponent<Building>();
+        if (b != null && b.placed)
         {
-            gridSystem.SelectBuildingForDeletion(building);
-            gridSystem.SelectBuildingForRelocation(building);
+            gridSystem.ClearSelection();
+            gridSystem.SelectBuildingForDeletion(b);
+            gridSystem.SelectBuildingForRelocation(b);
         }
     }
 
