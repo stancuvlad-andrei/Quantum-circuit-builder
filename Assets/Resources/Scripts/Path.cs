@@ -85,12 +85,25 @@ public class Path : MonoBehaviour
 
     private IEnumerator WaveAnimation(Vector3Int sourcePosition, float incomingProbability, bool isCollapsed)
     {
+        while (SimulationManager.isPaused)
+        {
+            yield return null;
+        }
+
         isAnimating = true;
 
         if (waveSprites.Length >= 2)
         {
             spriteRenderer.sprite = waveSprites[1];
-            yield return new WaitForSeconds(waveDelay);
+            float delayTimer = 0f;
+            while (delayTimer < waveDelay)
+            {
+                if (!SimulationManager.isPaused)
+                {
+                    delayTimer += Time.deltaTime;
+                }
+                yield return null;
+            }
 
             Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
             Vector3Int incomingDir = sourcePosition - currentCell;
@@ -102,6 +115,11 @@ public class Path : MonoBehaviour
 
             foreach (var dir in directions)
             {
+                while (SimulationManager.isPaused)
+                {
+                    yield return null;
+                }
+
                 if (dir == incomingDir)
                 {
                     continue;
@@ -113,6 +131,11 @@ public class Path : MonoBehaviour
                     if (neighbor == null)
                     {
                         continue;
+                    }
+
+                    while (SimulationManager.isPaused)
+                    {
+                        yield return null;
                     }
 
                     // Path handling
