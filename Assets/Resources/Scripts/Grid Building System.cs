@@ -32,6 +32,8 @@ public class GridBuildingSystem : MonoBehaviour
     public Button relocateButton; // Relocate button
     private Building selectedBuildingForRelocation; // Selected building for relocation
     public Dictionary<Vector3Int, Building> placedBuildings = new Dictionary<Vector3Int, Building>(); // Placed buildings
+    public GameObject infoPanel; // Info panel
+    public TMPro.TextMeshProUGUI infoLabel; // Info label
 
 
     #region Unity Methods
@@ -234,6 +236,7 @@ public class GridBuildingSystem : MonoBehaviour
         {
             inventoryUISlotImage.sprite = building.spriteRenderer.sprite;
             inventoryUISlotImage.enabled = true;
+            ShowInfo(building);
         }
 
         // Uppdate delete button position version
@@ -301,6 +304,7 @@ public class GridBuildingSystem : MonoBehaviour
         if (relocateButton != null)
         {
             relocateButton.gameObject.SetActive(true);
+            ShowInfo(building);
         }
         else
         {
@@ -358,6 +362,12 @@ public class GridBuildingSystem : MonoBehaviour
             inventoryUISlotImage.sprite = null;
         }
 
+        // Hide info panel
+        if (infoPanel != null)
+        {
+            infoPanel.SetActive(false);
+        }
+
         // Forget any previously selected buildings
         selectedBuildingForDeletion = null;
         selectedBuildingForRelocation = null;
@@ -396,6 +406,15 @@ public class GridBuildingSystem : MonoBehaviour
         for (int i = 0; i < tiles.Length; i++)
         {
             tiles[i] = tileBases[type];
+        }
+    }
+
+    private void ShowInfo(Building b)
+    {
+        if (infoPanel != null && infoLabel != null)
+        {
+            infoLabel.text = b.infoText;
+            infoPanel.SetActive(true);
         }
     }
 

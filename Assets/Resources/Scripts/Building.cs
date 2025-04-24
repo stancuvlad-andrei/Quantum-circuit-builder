@@ -8,6 +8,7 @@ public class Building : MonoBehaviour
     public BoundsInt area; // Area occupied by building
     public Transform spriteTransform; // Transform of the sprite
     public SpriteRenderer spriteRenderer; // Sprite renderer of the sprite
+    public string infoText = "Default building info"; // Info text for the building
 
     #region Unity Methods
 
