@@ -289,6 +289,7 @@ public class GridBuildingSystem : MonoBehaviour
         inventoryUISlotImage.enabled = false;
         inventoryUISlotImage.sprite = null;
         selectedBuildingForDeletion = null;
+        infoPanel.SetActive(false);
     }
 
     public void SelectBuildingForRelocation(Building building)
