@@ -34,6 +34,7 @@ public class GridBuildingSystem : MonoBehaviour
     public Dictionary<Vector3Int, Building> placedBuildings = new Dictionary<Vector3Int, Building>(); // Placed buildings
     public GameObject infoPanel; // Info panel
     public TMPro.TextMeshProUGUI infoLabel; // Info label
+    public event System.Action<Building> OnBuildingPlaced; // Event for building placement
 
 
     #region Unity Methods
@@ -208,6 +209,11 @@ public class GridBuildingSystem : MonoBehaviour
             {
                 placedBuildings.Add(cell, temp);
             }
+        }
+
+        if (temp != null)
+        {
+            OnBuildingPlaced?.Invoke(temp);
         }
 
         if (buildingSorter != null)

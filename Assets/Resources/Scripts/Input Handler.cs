@@ -8,6 +8,7 @@ public class InputHandler : MonoBehaviour
 {
     private Camera mainCamera; // Main camera reference
     [SerializeField] private GridBuildingSystem gridSystem; // GridBuildingSystem reference
+    [SerializeField] private TutorialPrompt tutorialPrompt; // Tutorial prompt reference
 
     #region Unity Methods
 
@@ -58,33 +59,46 @@ public class InputHandler : MonoBehaviour
         { 
             return; 
         }
-
         if (gridSystem == null) 
         { 
             return; 
         }
-
-        // Raycast only if not over UI
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (EventSystem.current.IsPointerOverGameObject()) 
+        { 
+            return; 
+        }
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        // If we hit nothing clear any selection
         if (hit.collider == null)
         {
-            // (optionally skip if user is panning / dragging the view)
             gridSystem.ClearSelection();
+            if (tutorialPrompt != null) 
+            {
+                tutorialPrompt.ShowTutorialMessage("Try placing buildings on empty grid spaces!");
+            }
+
             return;
         }
 
-        // If we hit a placed Building switch selection
         Building b = hit.collider.GetComponent<Building>();
         if (b != null && b.placed)
         {
+            if (tutorialPrompt != null)
+            {
+                tutorialPrompt.ShowObjectInfo(b.GetDescription());
+            }
             gridSystem.ClearSelection();
             gridSystem.SelectBuildingForDeletion(b);
             gridSystem.SelectBuildingForRelocation(b);
+        }
+        else
+        {
+            if (tutorialPrompt != null) 
+            {
+                tutorialPrompt.ShowTutorialMessage("Click on placed buildings to interact!");
+            }
         }
     }
 

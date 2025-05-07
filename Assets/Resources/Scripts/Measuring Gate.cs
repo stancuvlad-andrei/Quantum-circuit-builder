@@ -6,6 +6,8 @@ public class MeasuringGate : MonoBehaviour
     public Sprite state0Sprite; // Sprite for state 0
     public Sprite state1Sprite; // Sprite for state 1
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+    public static event System.Action<MeasuringGate, int> OnMeasurement; // Event for measurement
+    public static event System.Action<MeasuringGate> OnReset; // Event for reset
 
     #region Unity Methods
 
@@ -60,6 +62,9 @@ public class MeasuringGate : MonoBehaviour
                 }
             }
         }
+
+        // Trigger measurement event
+        OnMeasurement?.Invoke(this, measuredState);
     }
 
     #endregion
@@ -72,6 +77,8 @@ public class MeasuringGate : MonoBehaviour
         {
             spriteRenderer.sprite = inactiveSprite;
         }
+
+        OnReset?.Invoke(this);
     }
 
     #endregion

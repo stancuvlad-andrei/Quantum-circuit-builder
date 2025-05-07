@@ -109,6 +109,11 @@ public class Building : MonoBehaviour
         }
     }
 
+    public string GetDescription()
+    {
+        return $"Building: {gameObject.name}\n(Drag to move, Right-click to delete)";
+    }
+
     #endregion
 
 }
