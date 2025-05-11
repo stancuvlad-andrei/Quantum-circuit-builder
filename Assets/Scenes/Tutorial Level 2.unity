@@ -2964,10 +2964,10 @@ RectTransform:
   - {fileID: 1391218558}
   m_Father: {fileID: 940440090}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00003767, y: -0.9467338}
-  m_SizeDelta: {x: 225, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 112.25001, y: -199.19168}
+  m_SizeDelta: {x: 224.5, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &227164918
 MonoBehaviour:
@@ -5904,7 +5904,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1436077253
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5920,9 +5920,9 @@ RectTransform:
   - {fileID: 225978256}
   m_Father: {fileID: 227164917}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -235}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1436077254
@@ -6528,15 +6528,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 201a8f023b2e59a46b3b1c75176de67f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelID: 1
+  levelID: 2
   tutorialPrompt: {fileID: 344862706}
-  level1Messages:
-  - Welcome to Quantum Basics! In this level, you will learn about measurement gates.
+  level1Messages: []
+  level2Messages:
+  - Welcome to Quantum Gates! Place X/Y/Z gates to manipulate qubits.
   - Click on the qubit to place it on the grid
+  - Place at least one gate (X, Y, or Z).
   - Click the Measurement Gate to place it on the grid
-  - Connect the qubit to the measuring gate with paths
-  - Click the start button to start the simulation!
-  level2Messages: []
+  - Connect everything with paths
+  - Start the simulation to see the effect!
   gridSystem: {fileID: 648429325}
   startSimulationButton: {fileID: 1394713985}
 --- !u!4 &1594554245
@@ -7179,7 +7180,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1814252330
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7195,9 +7196,9 @@ RectTransform:
   - {fileID: 1526809295}
   m_Father: {fileID: 227164917}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -235}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1814252331
@@ -7456,7 +7457,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1926400555
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7472,9 +7473,9 @@ RectTransform:
   - {fileID: 73327500}
   m_Father: {fileID: 227164917}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -235}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1926400556

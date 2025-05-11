@@ -5,9 +5,14 @@ using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] private int levelID; // ID of the current level
+    private bool gateActivated; // Flag to check if a gate is activated
+    private string[] currentLevelMessages => (levelID == 1) ? level1Messages : level2Messages; // Array of messages based on level ID
+
     [Header("Tutorial Settings")]
     [SerializeField] private TutorialPrompt tutorialPrompt; // Reference to the tutorial prompt
-    [SerializeField] private string[] tutorialMessages; // Array of tutorial messages
+    [SerializeField] private string[] level1Messages; // Array of tutorial messages for level 1
+    [SerializeField] private string[] level2Messages; // Array of tutorial messages for level 2
 
     [Header("References")]
     [SerializeField] private GridBuildingSystem gridSystem; // Reference to the grid system
@@ -27,9 +32,13 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
+        gateActivated = false;
         startSimulationButton.onClick.AddListener(OnStartSimulation);
         gridSystem.OnBuildingPlaced += HandleBuildingPlaced;
         MeasuringGate.OnMeasurement += HandleMeasurement;
+        XGate.OnGateActivated += HandleGateActivated;
+        YGate.OnGateActivated += HandleGateActivated;
+        ZGate.OnGateActivated += HandleGateActivated;
         ShowNextTutorialMessage();
     }
 
@@ -39,12 +48,12 @@ public class LevelManager : MonoBehaviour
 
     private void ShowNextTutorialMessage()
     {
-        if (currentMessageIndex >= tutorialMessages.Length) 
-        { 
-            return; 
+        if (currentMessageIndex >= currentLevelMessages.Length)
+        {
+            return;
         }
 
-        tutorialPrompt.ShowTutorialMessage(tutorialMessages[currentMessageIndex]);
+        tutorialPrompt.ShowTutorialMessage(currentLevelMessages[currentMessageIndex]);
 
         // Set up conditions for advancing messages
         switch (currentMessageIndex)
@@ -81,19 +90,41 @@ public class LevelManager : MonoBehaviour
             return; 
         }
 
-        // Check for required components using TryGetComponent
-        if (currentMessageIndex == 1 && building.TryGetComponent<Qubit>(out _))
+        if (levelID == 1)
         {
-            AdvanceTutorial();
+            if (currentMessageIndex == 1 && building.TryGetComponent<Qubit>(out _))
+            {
+                AdvanceTutorial();
+            }
+            else if (currentMessageIndex == 2 && building.TryGetComponent<MeasuringGate>(out _))
+            {
+                AdvanceTutorial();
+            }
+            else if (currentMessageIndex == 3 && building.TryGetComponent<Path>(out _))
+            {
+                AdvanceTutorial();
+            }
         }
-        else if (currentMessageIndex == 2 && building.TryGetComponent<MeasuringGate>(out _))
+        else if (levelID == 2)
         {
-            AdvanceTutorial();
+            if (currentMessageIndex == 1 && building.TryGetComponent<Qubit>(out _))
+            {
+                AdvanceTutorial();
+            }
+            else if (currentMessageIndex == 2 && (building.TryGetComponent<XGate>(out _) || building.TryGetComponent<YGate>(out _) || building.TryGetComponent<ZGate>(out _)))
+            {
+                AdvanceTutorial();
+            }
+            else if (currentMessageIndex == 3 && building.TryGetComponent<MeasuringGate>(out _))
+            {
+                AdvanceTutorial();
+            }
+            else if (currentMessageIndex == 4 && building.TryGetComponent<Path>(out _))
+            {
+                AdvanceTutorial();
+            }
         }
-        else if (currentMessageIndex == 3 && building.TryGetComponent<Path>(out _))
-        {
-            AdvanceTutorial();
-        }
+
     }
 
     private void AdvanceTutorial()
@@ -113,13 +144,17 @@ public class LevelManager : MonoBehaviour
 
     private void HandleMeasurement(MeasuringGate gate, int measuredState)
     {
-        if (!levelCompleted)
+        if (levelCompleted) return;
+
+        if (levelID == 1 || (levelID == 2 && gateActivated))
         {
             levelCompleted = true;
-            Debug.Log("LEVEL COMPLETED!");
+            Debug.Log($"LEVEL {levelID} COMPLETED!");
             tutorialPrompt.ShowTutorialMessage("Well done! You completed the level!");
         }
     }
+
+    private void HandleGateActivated<T>(T gate) => gateActivated = true;
 
     #endregion
 
@@ -138,6 +173,9 @@ public class LevelManager : MonoBehaviour
         }
 
         MeasuringGate.OnMeasurement -= HandleMeasurement;
+        XGate.OnGateActivated -= HandleGateActivated;
+        YGate.OnGateActivated -= HandleGateActivated;
+        ZGate.OnGateActivated -= HandleGateActivated;
     }
 
     #endregion

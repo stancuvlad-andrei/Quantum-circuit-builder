@@ -7,6 +7,7 @@ public class XGate : MonoBehaviour
     public Sprite activeSprite; // Sprite when active
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+    public static event System.Action<XGate> OnGateActivated; // Event for gate activation
 
     #region Unity Methods
 
@@ -39,6 +40,8 @@ public class XGate : MonoBehaviour
             result = 1f - incomingProbability;
             Debug.Log($"XGate (Uncollapsed): Flipped {incomingProbability} to {result}");
         }
+
+        OnGateActivated?.Invoke(this);
 
         StartCoroutine(PropagateWave(result, incomingProbability == 0f || incomingProbability == 1f, sourcePosition));
 
