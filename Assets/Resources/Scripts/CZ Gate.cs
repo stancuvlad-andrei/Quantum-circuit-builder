@@ -9,6 +9,7 @@ public class CZGate : MonoBehaviour
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
     private ControlData controlSignal = null; // First arriving signal
+    public static event System.Action<CZGate> OnGateActivated; // Event for gate activation
 
     private class ControlData
     {
@@ -92,7 +93,7 @@ public class CZGate : MonoBehaviour
 
             // Clear stored signal
             controlSignal = null;
-
+            OnGateActivated?.Invoke(this);
             return finalTargetProb;
         }
     }

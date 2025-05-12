@@ -9,6 +9,7 @@ public class SPGate : MonoBehaviour
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
     private ControlData firstSignal = null; // First signal received
+    public static event System.Action<SPGate> OnGateActivated; // Event for gate activation
 
     private class ControlData
     {
@@ -81,7 +82,7 @@ public class SPGate : MonoBehaviour
 
             // Clear stored signal
             firstSignal = null;
-
+            OnGateActivated?.Invoke(this);
             return swappedSecond;
         }
     }

@@ -9,6 +9,7 @@ public class CXGate : MonoBehaviour
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
     private ControlData controlSignal = null; // Control signal data
+    public static event System.Action<CXGate> OnGateActivated; // Event for gate activation
 
     private class ControlData
     {
@@ -89,7 +90,7 @@ public class CXGate : MonoBehaviour
 
             // Reset control signal after use
             controlSignal = null;
-
+            OnGateActivated?.Invoke(this);
             return targetProbability;
         }
     }

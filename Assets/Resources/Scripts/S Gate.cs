@@ -8,6 +8,7 @@ public class SGate : MonoBehaviour
     public Sprite activeSprite; // Sprite when active
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+    public static event System.Action<SGate> OnGateActivated; // Event for gate activation
 
     #region Unity Methods
 
@@ -46,6 +47,7 @@ public class SGate : MonoBehaviour
             result = Mathf.Clamp01(result);
         }
 
+        OnGateActivated?.Invoke(this);
         Debug.Log($"SGate: Adjusted probability from {incomingProbability} to {result}");
         StartCoroutine(PropagateWave(result, incomingProbability == 0f || incomingProbability == 1f, sourcePosition));
         return result;

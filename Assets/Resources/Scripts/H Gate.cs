@@ -8,6 +8,7 @@ public class HGate : MonoBehaviour
     public Sprite activeSprite; // Sprite when active
     public float activationTime = 0.3f; // Time to show the active sprite
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+    public static event System.Action<HGate> OnGateActivated; // Event for gate activation
 
     #region Unity Methods
 
@@ -34,6 +35,8 @@ public class HGate : MonoBehaviour
         bool newIsCollapsed = false; // Always uncollapse after H gate
 
         Debug.Log($"HGate: Reset probability to 50% (was collapsed: {wasCollapsed})");
+
+        OnGateActivated?.Invoke(this);
 
         // Propagate with new probability and uncollapsed state
         StartCoroutine(PropagateWave(result, newIsCollapsed, sourcePosition));
