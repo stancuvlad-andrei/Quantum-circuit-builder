@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class LevelManager : MonoBehaviour
 
     private int currentMessageIndex = 0; // Index for the current tutorial message
     private bool levelCompleted; // Flag to check if the level is completed
+
+    [Header("Completion Panel")]
+    [SerializeField] private GameObject completionPanel; // Panel to show upon level completion
+    [SerializeField] private float panelDelay = 1.5f; // Delay before showing the completion panel
 
     #region Unity Methods
 
@@ -222,6 +227,7 @@ public class LevelManager : MonoBehaviour
             levelCompleted = true;
             Debug.Log($"LEVEL {levelID} COMPLETED!");
             tutorialPrompt.ShowTutorialMessage("Well done! You completed the level!");
+            StartCoroutine(ShowCompletionPanelAfterDelay());
         }
     }
 
@@ -253,6 +259,18 @@ public class LevelManager : MonoBehaviour
         CXGate.OnGateActivated -= HandleGateActivated;
         CZGate.OnGateActivated -= HandleGateActivated;
         SPGate.OnGateActivated -= HandleGateActivated;
+    }
+
+    private IEnumerator ShowCompletionPanelAfterDelay()
+    {
+        yield return new WaitForSeconds(panelDelay);
+        completionPanel.SetActive(true);
+        tutorialPrompt.HideAllPanels();
+    }
+
+    public void BackToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     #endregion
