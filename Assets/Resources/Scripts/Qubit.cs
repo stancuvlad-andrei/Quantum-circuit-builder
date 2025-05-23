@@ -53,6 +53,11 @@ public class Qubit : MonoBehaviour
             Vector3Int neighborPos = sourcePosition + dir;
             if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
             {
+                if (neighbor == null) 
+                { 
+                    continue; 
+                }
+
                 if (neighbor.TryGetComponent<Path>(out Path path))
                 {
                     path.StartWave(sourcePosition, probability, collapsed);

@@ -94,17 +94,42 @@ public class Building : MonoBehaviour
 
     private void OnDestroy()
     {
+        // Notify BuildingSorter to remove this building
         if (BuildingSorter.Instance != null)
         {
             BuildingSorter.Instance.UnregisterBuilding(this);
         }
 
-        // Remove this building from placedBuildings
+        // Notify GridBuildingSystem to clean up references
         if (GridBuildingSystem.current != null)
         {
+            // Remove from placedBuildings
             foreach (Vector3Int cell in area.allPositionsWithin)
             {
                 GridBuildingSystem.current.placedBuildings.Remove(cell);
+            }
+
+            // Notify adjacent paths to update their neighbors
+            Vector3Int currentCell = GridBuildingSystem.current.gridLayout.WorldToCell(transform.position);
+            Vector3Int[] directions = {
+            Vector3Int.right, Vector3Int.left,
+            Vector3Int.up, Vector3Int.down
+        };
+
+            foreach (var dir in directions)
+            {
+                Vector3Int neighborPos = currentCell + dir;
+                if (GridBuildingSystem.current.placedBuildings.TryGetValue(neighborPos, out Building neighbor))
+                {
+                    // Use Unity's null check for destroyed objects
+                    if (neighbor == null) continue;
+
+                    Path neighborPath = neighbor.GetComponent<Path>();
+                    if (neighborPath != null)
+                    {
+                        neighborPath.FindNeighbors();
+                    }
+                }
             }
         }
     }

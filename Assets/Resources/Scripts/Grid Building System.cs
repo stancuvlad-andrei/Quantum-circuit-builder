@@ -49,7 +49,6 @@ public class GridBuildingSystem : MonoBehaviour
             current = this;
         }
 
-        // Initialize other components here
         if (mainTilemap == null)
         {
             Debug.LogError("Main Tilemap not assigned!");
@@ -58,11 +57,14 @@ public class GridBuildingSystem : MonoBehaviour
 
     private void Start()
     {
-        string tilePath = @"Tiles/";
-        tileBases.Add(TileType.empty, null);
-        tileBases.Add(TileType.white, Resources.Load<TileBase>(tilePath + "WhiteTile"));
-        tileBases.Add(TileType.green, Resources.Load<TileBase>(tilePath + "GreenTile"));
-        tileBases.Add(TileType.red, Resources.Load<TileBase>(tilePath + "RedTile"));
+        if (tileBases.Count == 0) 
+        {
+            string tilePath = @"Tiles/";
+            tileBases.Add(TileType.empty, null);
+            tileBases.Add(TileType.white, Resources.Load<TileBase>(tilePath + "WhiteTile"));
+            tileBases.Add(TileType.green, Resources.Load<TileBase>(tilePath + "GreenTile"));
+            tileBases.Add(TileType.red, Resources.Load<TileBase>(tilePath + "RedTile"));
+        }
     }
 
     private void Update()
@@ -117,6 +119,14 @@ public class GridBuildingSystem : MonoBehaviour
             clearArea();
             Destroy(temp.gameObject);
             inventoryUISlotImage.enabled = false;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (current == this)
+        {
+            current = null;
         }
     }
 
@@ -272,30 +282,47 @@ public class GridBuildingSystem : MonoBehaviour
     {
         if (selectedBuildingForDeletion == null) return;
 
+        // Notify adjacent paths to update neighbors
+        Vector3Int[] directions = {
+        Vector3Int.right, Vector3Int.left,
+        Vector3Int.up, Vector3Int.down
+    };
+
+        foreach (Vector3Int cell in selectedBuildingForDeletion.area.allPositionsWithin)
+        {
+            foreach (var dir in directions)
+            {
+                Vector3Int neighborPos = cell + dir;
+                if (placedBuildings.TryGetValue(neighborPos, out Building neighbor))
+                {
+                    Path neighborPath = neighbor?.GetComponent<Path>();
+                    if (neighborPath != null)
+                    {
+                        neighborPath.FindNeighbors(); // Force neighbor update
+                    }
+                }
+            }
+        }
+
+        // Remove building from grid
         foreach (Vector3Int cell in selectedBuildingForDeletion.area.allPositionsWithin)
         {
             placedBuildings.Remove(cell);
         }
 
+        // Restore tiles to white (buildable)
         SetTilesBlock(selectedBuildingForDeletion.area, TileType.white, mainTilemap);
+
+        // Destroy the GameObject
         Destroy(selectedBuildingForDeletion.gameObject);
 
-        // Hide both buttons
-        if (deleteButton != null)
-        {
-            deleteButton.gameObject.SetActive(false);
-        }
-
-        if (relocateButton != null)
-        {
-            relocateButton.gameObject.SetActive(false);
-        }
-
-        // Clear inventory UI
+        // UI cleanup
+        deleteButton?.gameObject.SetActive(false);
+        relocateButton?.gameObject.SetActive(false);
         inventoryUISlotImage.enabled = false;
         inventoryUISlotImage.sprite = null;
-        selectedBuildingForDeletion = null;
         infoPanel.SetActive(false);
+        selectedBuildingForDeletion = null;
     }
 
     public void SelectBuildingForRelocation(Building building)
